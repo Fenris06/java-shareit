@@ -6,14 +6,11 @@ import javax.validation.constraints.Email;
 
 
 
-/**
- * TODO Sprint add-controllers.
- */
 @Getter
 @Setter
 @EqualsAndHashCode
 @ToString
-public class User {
+public class UserDTO {
     private Long id;
     private String name;
     @Email(message = "Invalid email")
