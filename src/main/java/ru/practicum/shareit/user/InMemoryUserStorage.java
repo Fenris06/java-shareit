@@ -12,8 +12,8 @@ import java.util.*;
 @Primary
 public class InMemoryUserStorage implements UserStorage {
     long id = 1;
-
     private final Map<Long, User> users = new HashMap<>();
+    private final Map<Long, Set<Long>> usersItems = new HashMap<>();
 
     @Override
     public List<User> getUsers() {
@@ -22,7 +22,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getUser(Long id) {
-        if(users.get(id) != null) {
+        if (users.containsKey(id)) {
             log.debug("User id {} not return", id);
             return users.get(id);
         } else {
@@ -50,4 +50,28 @@ public class InMemoryUserStorage implements UserStorage {
     public void deleteUser(Long id) {
         users.remove(id);
     }
+
+    @Override
+    public void addUserItems(Long userId, Long itemId) {
+        if (usersItems.containsKey(userId)) {
+            Set<Long> itemIds = usersItems.get(userId);
+            itemIds.add(userId);
+            usersItems.replace(userId, itemIds);
+        } else {
+            Set<Long> itemIds = new HashSet<>();
+            itemIds.add(itemId);
+            usersItems.put(userId, itemIds);
+        }
+    }
+
+    @Override
+    public Set<Long> getUserItemsId(Long userId) {
+        if (usersItems.containsKey(userId)) {
+            return usersItems.get(userId);
+        } else {
+            throw new NotFoundException("User don't have any items");
+        }
+    }
+
+
 }

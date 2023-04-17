@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user;
 
 import java.util.List;
+import java.util.Set;
 
 public interface UserStorage {
     List<User> getUsers();
@@ -13,5 +14,7 @@ public interface UserStorage {
 
     void deleteUser(Long id);
 
+    void addUserItems(Long userId, Long itemId);
 
+    Set<Long> getUserItemsId(Long userId);
 }

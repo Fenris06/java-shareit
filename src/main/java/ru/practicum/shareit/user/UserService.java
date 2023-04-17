@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.DuplicateException;
 import ru.practicum.shareit.exception.NoArgumentException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -20,32 +21,36 @@ public class UserService {
 
     public List<UserDTO> getUsers() {
         log.debug("Users not covert to DTO");
-        return userStorage.getUsers().stream().map(UserMapper::toDTO).collect(Collectors.toList());
+        return userStorage.getUsers().stream().map(UserMapper::userToDTO).collect(Collectors.toList());
     }
 
     public UserDTO getUser(Long id) {
         log.debug("User id {} not convert to DTO", id);
-        return UserMapper.toDTO(userStorage.getUser(id));
+        return UserMapper.userToDTO(userStorage.getUser(id));
     }
 
     public UserDTO createUser(UserDTO userDTO) {
-        User user = UserMapper.fromDTO(userDTO);
+        User user = UserMapper.userFromDTO(userDTO);
         checkUserName(user.getName());
         checkUserEmail(user.getEmail());
         emails.add(user.getEmail());
-        return UserMapper.toDTO(userStorage.createUser(user));
+        return UserMapper.userToDTO(userStorage.createUser(user));
     }
 
     public UserDTO updateUser(UserDTO userDTO, Long id) {
         User updateUser = userStorage.getUser(id);
-        User user = UserMapper.fromDTO(userDTO);
-        return UserMapper.toDTO(updateFields(user, updateUser));
+        User user = UserMapper.userFromDTO(userDTO);
+        return UserMapper.userToDTO(updateFields(user, updateUser));
     }
 
     public void deleteUser(Long id) {
         User user = userStorage.getUser(id);
         emails.remove(user.getEmail());
         userStorage.deleteUser(id);
+    }
+
+    public void checkUser(Long id) {
+        userStorage.getUser(id);
     }
 
     private void checkUserEmail(String email) {
@@ -63,6 +68,14 @@ public class UserService {
         }
     }
 
+    public void addUserItemId (Long userId, Long itemId) {
+        userStorage.addUserItems(userId, itemId);
+    }
+
+    public List<Long> getUserItemsId(Long userId) {
+        return new ArrayList<>(userStorage.getUserItemsId(userId));
+    }
+
     private User updateFields(User user, User updateUser) {
         if (user.getEmail() != null && user.getName() == null) {
             checkUserEmail(user.getEmail());
@@ -75,6 +88,7 @@ public class UserService {
             return userStorage.updateUser(updateUser);
         }
         if (user.getName() != null && user.getEmail() != null) {
+            checkUserEmail(user.getEmail());
             emails.remove(updateUser.getEmail());
             updateUser.setName(user.getName());
             updateUser.setEmail(user.getEmail());
