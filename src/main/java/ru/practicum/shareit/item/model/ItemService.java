@@ -5,11 +5,11 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NoArgumentException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserDTO;
 import ru.practicum.shareit.user.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,8 +18,15 @@ public class ItemService {
     private final ItemStorage itemStorage;
     private final UserService userService;
 
-    public List<ItemDto> getItems() {
-        return itemStorage.getItems().stream().map(ItemMapper::itemToDTO).collect(Collectors.toList());
+    public List<ItemDto> getUserItems(Long userId) {
+        userService.checkUser(userId);
+        List<ItemDto> userItems = new ArrayList<>();
+        List<Long> userItemIds = userService.getUserItemsId(userId);
+        for (Long id : userItemIds) {
+            ItemDto itemDto = getItem(id);
+            userItems.add(itemDto);
+        }
+        return userItems;
     }
 
     public ItemDto getItem(Long id) {
@@ -41,6 +48,25 @@ public class ItemService {
         Item item = ItemMapper.itemFromDTO(itemDto);
         checkUserItems(userId, itemId);
         return ItemMapper.itemToDTO(updateItemFields(item, itemId));
+    }
+
+    public List<ItemDto> itemSearch(Long userId, String text) {
+        userService.checkUser(userId);
+        List<ItemDto> itemSearch = new ArrayList<>();
+        List<Item> items = itemStorage.getItems();
+        if (text.isEmpty()) {
+            return itemSearch;
+        }
+        String search = text.toLowerCase();
+        for (Item item : items) {
+            if (item.getAvailable()) {
+                if (item.getName().toLowerCase().contains(search)
+                        || item.getDescription().toLowerCase().contains(search)) {
+                    itemSearch.add(ItemMapper.itemToDTO(item));
+                }
+            }
+        }
+        return itemSearch;
     }
 
     private void checkItemFields(ItemDto itemDto) {

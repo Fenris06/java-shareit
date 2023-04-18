@@ -72,6 +72,4 @@ public class InMemoryUserStorage implements UserStorage {
             throw new NotFoundException("User don't have any items");
         }
     }
-
-
 }
