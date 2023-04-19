@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface UserStorage {
+
     List<User> getUsers();
 
     User getUser(Long id);

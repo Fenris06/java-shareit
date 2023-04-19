@@ -41,9 +41,9 @@ public class UserService {
     }
 
     public UserDTO updateUser(UserDTO userDTO, Long id) {
-        User updateUser = userStorage.getUser(id);
+        checkUser(id);
         User user = UserMapper.userFromDTO(userDTO);
-        return UserMapper.userToDTO(updateFields(user, updateUser));
+        return UserMapper.userToDTO(updateFields(user, id));
     }
 
     public void deleteUser(Long id) {
@@ -57,7 +57,7 @@ public class UserService {
     }
 
     private void checkUserEmail(String email) {
-        if(email == null) {
+        if (email == null) {
             throw new NoArgumentException("Email not set");
         }
         if (emails.contains(email)) {
@@ -71,7 +71,7 @@ public class UserService {
         }
     }
 
-    public void addUserItemId (Long userId, Long itemId) {
+    public void addUserItemId(Long userId, Long itemId) {
         userStorage.addUserItems(userId, itemId);
     }
 
@@ -79,26 +79,23 @@ public class UserService {
         return new ArrayList<>(userStorage.getUserItemsId(userId));
     }
 
-    private User updateFields(User user, User updateUser) {
-        if (user.getEmail() != null && user.getName() == null) {
-            checkUserEmail(user.getEmail());
-            emails.remove(updateUser.getEmail());
-            updateUser.setEmail(user.getEmail());
-            return userStorage.updateUser(updateUser);
-        }
-        if (user.getName() != null && user.getEmail() == null) {
-            updateUser.setName(user.getName());
-            return userStorage.updateUser(updateUser);
-        }
-        if (user.getName() != null && user.getEmail() != null) {
-            checkUserEmail(user.getEmail());
-            emails.remove(updateUser.getEmail());
-            updateUser.setName(user.getName());
-            updateUser.setEmail(user.getEmail());
-            return userStorage.updateUser(updateUser);
-        } else {
+    private User updateFields(User user, Long userId) {
+        if (user.getName() == null && user.getEmail() == null) {
             throw new NoArgumentException("All fields are empty");
         }
+        User updateUser = userStorage.getUser(userId);
+        if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+            if (!updateUser.getEmail().equals(user.getEmail())) {
+                checkUserEmail(user.getEmail());
+                emails.remove(updateUser.getEmail());
+                updateUser.setEmail(user.getEmail());
+                emails.add(updateUser.getEmail());
+            }
+        }
+        if (user.getName() != null && !user.getName().isEmpty()) {
+            updateUser.setName(user.getName());
+        }
+        return userStorage.updateUser(updateUser);
     }
 }
 
