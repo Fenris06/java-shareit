@@ -1,4 +1,4 @@
-package ru.practicum.shareit.request.dto;
+package ru.practicum.shareit.request.model;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import java.time.Instant;
 @Getter
 @EqualsAndHashCode
 @ToString
-public class ItemRequestDto {
+public class ItemRequest {
     private Long id;
     private String description;
     private Long requestorId;

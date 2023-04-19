@@ -1,6 +1,7 @@
-package ru.practicum.shareit.item.model;
+package ru.practicum.shareit.item.service;
 
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Item;
 
 public class ItemMapper {
     public static Item itemFromDTO(ItemDto itemDto){

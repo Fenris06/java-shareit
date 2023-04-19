@@ -1,9 +1,11 @@
-package ru.practicum.shareit.item.model;
+package ru.practicum.shareit.item.storage.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.storage.ItemStorage;
 
 import java.util.*;
 
