@@ -13,6 +13,7 @@ import ru.practicum.shareit.user.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,13 +23,7 @@ public class ItemServiceImpl implements ItemService {
 
     public List<ItemDto> getUserItems(Long userId) {
         userService.checkUser(userId);
-        List<ItemDto> userItems = new ArrayList<>();
-        List<Long> userItemIds = userService.getUserItemsId(userId);
-        for (Long id : userItemIds) {
-            ItemDto itemDto = getItem(id);
-            userItems.add(itemDto);
-        }
-        return userItems;
+        return userService.getUserItemsId(userId).stream().map(this::getItem).collect(Collectors.toList());
     }
 
     public ItemDto getItem(Long id) {
@@ -54,21 +49,13 @@ public class ItemServiceImpl implements ItemService {
 
     public List<ItemDto> itemSearch(Long userId, String text) {
         userService.checkUser(userId);
-        List<ItemDto> itemSearch = new ArrayList<>();
-        List<Item> items = itemStorage.getItems();
         if (text.isEmpty()) {
-            return itemSearch;
+            return new ArrayList<>();
         }
-        String search = text.toLowerCase();
-        for (Item item : items) {
-            if (item.getAvailable()) {
-                if (item.getName().toLowerCase().contains(search)
-                        || item.getDescription().toLowerCase().contains(search)) {
-                    itemSearch.add(ItemMapper.itemToDTO(item));
-                }
-            }
-        }
-        return itemSearch;
+        return itemStorage.getItems().stream().filter(Item::getAvailable)
+                .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase())
+                        || item.getDescription().toLowerCase().contains(text.toLowerCase()))
+                .map(ItemMapper::itemToDTO).collect(Collectors.toList());
     }
 
     private void checkItemFields(ItemDto itemDto) {
@@ -103,5 +90,4 @@ public class ItemServiceImpl implements ItemService {
             throw new NotFoundException("User doesn't have this item item");
         }
     }
-
 }

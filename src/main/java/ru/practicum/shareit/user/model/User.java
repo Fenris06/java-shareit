@@ -16,6 +16,5 @@ import javax.validation.constraints.Email;
 public class User {
     private Long id;
     private String name;
-    @Email(message = "Invalid email")
     private String email;
 }

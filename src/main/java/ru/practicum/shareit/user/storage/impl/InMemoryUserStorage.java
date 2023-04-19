@@ -19,6 +19,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public List<User> getUsers() {
+        log.debug("Users list not return)");
         return new ArrayList<>(users.values());
     }
 
@@ -50,6 +51,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public void deleteUser(Long id) {
+        log.debug("User {} not delete", id);
         users.remove(id);
     }
 
@@ -58,10 +60,12 @@ public class InMemoryUserStorage implements UserStorage {
         if (usersItems.containsKey(userId)) {
             Set<Long> itemIds = usersItems.get(userId);
             itemIds.add(userId);
+            log.debug("User {} with Item {} not add", userId, itemId);
             usersItems.replace(userId, itemIds);
         } else {
             Set<Long> itemIds = new HashSet<>();
             itemIds.add(itemId);
+            log.debug("User {} with Item {} not add", userId, itemId);
             usersItems.put(userId, itemIds);
         }
     }
@@ -69,6 +73,7 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public Set<Long> getUserItemsId(Long userId) {
         if (usersItems.containsKey(userId)) {
+            log.debug("User {} itemIds not return", userId);
             return usersItems.get(userId);
         } else {
             throw new NotFoundException("User don't have any items");

@@ -21,16 +21,19 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDto> getUserItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
+        log.debug("received GET /items with HEADER {}", userId);
         return itemService.getUserItems(userId);
     }
 
     @GetMapping("/{itemId}")
     public ItemDto getItem(@PathVariable("itemId") Long id) {
+        log.debug("received GET /items/{}", id);
         return itemService.getItem(id);
     }
 
     @PostMapping
     public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestBody ItemDto itemDto) {
+        log.debug("received POST /items/ with HEADER {} and BODY {}", userId, itemDto);
         return itemService.createItem(userId, itemDto);
     }
 
@@ -38,11 +41,13 @@ public class ItemController {
     public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                               @RequestBody ItemDto itemDto,
                               @PathVariable("id") Long id) {
+        log.debug("received PATCH /items/{} with HEADER {} and BODY {}", id, userId, itemDto);
         return itemService.updateItem(userId, itemDto, id);
     }
 
     @GetMapping("/search")
     public List<ItemDto> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestParam String text) {
+        log.debug("received GET /search with HEADER {} abd PARAM {}", userId, text);
         return itemService.itemSearch(userId, text);
     }
 }

@@ -41,7 +41,6 @@ public class UserService {
     }
 
     public UserDTO updateUser(UserDTO userDTO, Long id) {
-        checkUser(id);
         User user = UserMapper.userFromDTO(userDTO);
         return UserMapper.userToDTO(updateFields(user, id));
     }

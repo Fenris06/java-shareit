@@ -21,11 +21,13 @@ public class UserController {
 
     @GetMapping
     public List<UserDTO> getUsers() {
+        log.debug("received GET /users");
        return userService.getUsers();
     }
 
     @GetMapping("/{id}")
     public UserDTO getUser(@PathVariable("id") Long id) {
+        log.debug("received GET /users/{}", id);
         return userService.getUser(id);
     }
 
@@ -37,11 +39,13 @@ public class UserController {
 
     @PatchMapping("/{id}")
     public UserDTO update(@Valid @RequestBody UserDTO userDTO, @PathVariable("id") Long id) {
+        log.debug("received PATCH /users/{} and BODY {}", id, userDTO);
         return userService.updateUser(userDTO, id);
     }
 
     @DeleteMapping("/{id}")
     public Long delete(@PathVariable("id") Long id) {
+        log.debug("received DELETE /users/{}", id);
         userService.deleteUser(id);
         return id;
     }
