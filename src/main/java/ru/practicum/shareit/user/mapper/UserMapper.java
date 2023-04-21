@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user.service;
+package ru.practicum.shareit.user.mapper;
 
 
 import ru.practicum.shareit.user.dto.UserDTO;
