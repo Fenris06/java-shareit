@@ -5,10 +5,13 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NoArgumentException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.mapper.ItemMapstructMapper;
+import ru.practicum.shareit.item.mapper.ItemMapstructMapperImpl;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.mapper.ItemMapper;
+
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.storage.ItemStorage;
+
 import ru.practicum.shareit.user.service.UserService;
 
 import java.util.ArrayList;
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
     private final ItemStorage itemStorage;
     private final UserService userService;
+    private final ItemMapstructMapper mapper = new ItemMapstructMapperImpl();
 
     public List<ItemDto> getUserItems(Long userId) {
         userService.checkUser(userId);
@@ -27,24 +31,24 @@ public class ItemServiceImpl implements ItemService {
     }
 
     public ItemDto getItem(Long id) {
-        return ItemMapper.itemToDTO(itemStorage.getItem(id));
+        return mapper.itemToDTO(itemStorage.getItem(id));
     }
 
     public ItemDto createItem(Long userId, ItemDto itemDto) {
         userService.checkUser(userId);
         checkItemFields(itemDto);
-        Item item = ItemMapper.itemFromDTO(itemDto);
+        Item item = mapper.itemFromDTO(itemDto);
         item.setOwner(userId);
         Item createItem = itemStorage.createItem(item);
         userService.addUserItemId(userId, createItem.getId());
-        return ItemMapper.itemToDTO(createItem);
+        return mapper.itemToDTO(createItem);
     }
 
     public ItemDto updateItem(Long userId, ItemDto itemDto, Long itemId) {
         userService.checkUser(userId);
-        Item item = ItemMapper.itemFromDTO(itemDto);
+        Item item = mapper.itemFromDTO(itemDto);
         checkUserItems(userId, itemId);
-        return ItemMapper.itemToDTO(updateItemFields(item, itemId));
+        return mapper.itemToDTO(updateItemFields(item, itemId));
     }
 
     public List<ItemDto> itemSearch(Long userId, String text) {
@@ -55,7 +59,7 @@ public class ItemServiceImpl implements ItemService {
         return itemStorage.getItems().stream().filter(Item::getAvailable)
                 .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase())
                         || item.getDescription().toLowerCase().contains(text.toLowerCase()))
-                .map(ItemMapper::itemToDTO).collect(Collectors.toList());
+                .map(mapper::itemToDTO).collect(Collectors.toList());
     }
 
     private void checkItemFields(ItemDto itemDto) {

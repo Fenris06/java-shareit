@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.DuplicateException;
 import ru.practicum.shareit.exception.NoArgumentException;
 import ru.practicum.shareit.user.dto.UserDTO;
-import ru.practicum.shareit.user.mapper.UserMapper;
+
+import ru.practicum.shareit.user.mapper.UserMapstructMapper;
+import ru.practicum.shareit.user.mapper.UserMapstructMapperImpl;
 import ru.practicum.shareit.user.storage.UserStorage;
 import ru.practicum.shareit.user.model.User;
 
@@ -22,28 +24,29 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserStorage userStorage;
     private final Set<String> emails = new TreeSet<>();
+    private final UserMapstructMapper mapper = new UserMapstructMapperImpl();
 
     public List<UserDTO> getUsers() {
         log.debug("Users not covert to DTO");
-        return userStorage.getUsers().stream().map(UserMapper::userToDTO).collect(Collectors.toList());
+        return userStorage.getUsers().stream().map(mapper::userToDTO).collect(Collectors.toList());
     }
 
     public UserDTO getUser(Long id) {
         log.debug("User id {} not convert to DTO", id);
-        return UserMapper.userToDTO(userStorage.getUser(id));
+        return mapper.userToDTO(userStorage.getUser(id));
     }
 
     public UserDTO createUser(UserDTO userDTO) {
-        User user = UserMapper.userFromDTO(userDTO);
+        User user = mapper.userFromDTO(userDTO);
         checkUserName(user.getName());
         checkUserEmail(user.getEmail());
         emails.add(user.getEmail());
-        return UserMapper.userToDTO(userStorage.createUser(user));
+        return mapper.userToDTO(userStorage.createUser(user));
     }
 
     public UserDTO updateUser(UserDTO userDTO, Long id) {
-        User user = UserMapper.userFromDTO(userDTO);
-        return UserMapper.userToDTO(updateFields(user, id));
+        User user = mapper.userFromDTO(userDTO);
+        return mapper.userToDTO(updateFields(user, id));
     }
 
     public void deleteUser(Long id) {
