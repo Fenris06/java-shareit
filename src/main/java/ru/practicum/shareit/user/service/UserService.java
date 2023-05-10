@@ -84,5 +84,9 @@ public class UserService {
         }
         return repository.save(updateUser);
     }
+
+    public User getOwner(Long Id) {
+        return repository.findById(Id).orElseThrow(() -> new NotFoundException("user not found"));
+    }
 }
 

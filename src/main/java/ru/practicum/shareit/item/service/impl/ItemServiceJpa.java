@@ -61,6 +61,11 @@ public class ItemServiceJpa implements ItemService {
         return repository.itemSearch(text).stream().map(mapper::itemToDTO).collect(Collectors.toList());
     }
 
+    @Override
+    public Item itemForBooking(Long id) {
+        return repository.findById(id).orElseThrow(()-> new NotFoundException("Item not found"));
+    }
+
     private void checkItemFields(ItemDto itemDto) {
         if (itemDto.getName() == null || itemDto.getName().isEmpty()) {
             throw new NoArgumentException("Item name not add");

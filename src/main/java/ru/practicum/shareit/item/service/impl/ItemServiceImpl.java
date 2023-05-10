@@ -63,6 +63,11 @@ public class ItemServiceImpl implements ItemService {
                 .map(mapper::itemToDTO).collect(Collectors.toList());
     }
 
+    @Override
+    public Item itemForBooking(Long id) {
+        return null;
+    }
+
     private void checkItemFields(ItemDto itemDto) {
         if (itemDto.getName() == null || itemDto.getName().isEmpty()) {
             throw new NoArgumentException("Item name not add");
