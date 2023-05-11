@@ -36,6 +36,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingAnswerDTO createBooking(Long userId, BookingDto bookingDto) {
         User user = userService.getOwner(userId);
         Item item = itemService.itemForBooking(bookingDto.getItemId());
+        checkItemUser(item, user);
         checkItemStatus(item);
         Booking booking = BookingMapper.fromDto(bookingDto, item, user);
         checkBookingFields(booking);
@@ -159,9 +160,14 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private void checkOwner(Booking booking, Long userId) {
-        Item item = itemService.itemForBooking(booking.getItem().getId());
-        if (!Objects.equals(item.getOwner(), userId)) {
-            throw new NoArgumentException("This user can't approved booking status");
+        if (!Objects.equals(booking.getItem().getOwner(), userId)) {
+            throw new NotFoundException("This user can't approved booking status");
+        }
+    }
+
+    private void checkItemUser(Item item, User user) {
+        if (Objects.equals(item.getOwner(), user.getId())) {
+            throw new NotFoundException("Item owner can't create booking " + user.getId());
         }
     }
 
@@ -172,6 +178,9 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private Booking updateBookingFields(Booking booking, Boolean approved) {
+        if (booking.getStatus().equals(BookingStatus.APPROVED)) {
+            throw new NoArgumentException("You can't change status if it approved");
+        }
         if (approved) {
             booking.setStatus(BookingStatus.APPROVED);
         } else {
