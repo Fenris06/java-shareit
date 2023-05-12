@@ -14,9 +14,11 @@ import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exception.NoArgumentException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.service.ItemService;
+
+import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.service.UserService;
+
+import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
 
@@ -29,13 +31,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository repository;
-    private final UserService userService;
-    private final ItemService itemService;
+    private final UserRepository userRepository;
+    private final ItemRepository itemRepository;
 
     @Override
     public BookingAnswerDTO createBooking(Long userId, BookingDto bookingDto) {
-        User user = userService.getOwner(userId);
-        Item item = itemService.itemForBooking(bookingDto.getItemId());
+        User user = userRepository.findById(userId).orElseThrow(()-> new NotFoundException("User not found"));
+        Item item = itemRepository.findById(bookingDto.getItemId()).orElseThrow(()-> new NotFoundException("Item not found"));
         checkItemUser(item, user);
         checkItemStatus(item);
         Booking booking = BookingMapper.fromDto(bookingDto, item, user);
@@ -46,7 +48,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingAnswerDTO updateBookingStatus(Long userId, Long bookingId, Boolean approved) {
-        userService.checkUser(userId);
+        checkUser(userId);
         Booking booking = getBooking(bookingId);
         checkOwner(booking, userId);
         Booking updateBookingStatus = updateBookingFields(booking, approved);
@@ -55,7 +57,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingAnswerDTO getBookingByUser(Long userId, Long bookingId) {
-        userService.checkUser(userId);
+        checkUser(userId);
         Booking booking = getBooking(bookingId);
         checkBookingUser(userId, booking);
         return BookingMapper.toDto(booking);
@@ -63,7 +65,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingAnswerDTO> getAllByUser(Long userId, String state) {
-        userService.checkUser(userId);
+        checkUser(userId);
         LocalDateTime verification = LocalDateTime.now();
         switch (state) {
             case "ALL":
@@ -199,5 +201,9 @@ public class BookingServiceImpl implements BookingService {
 
     public Booking getBooking(Long bookingId) {
         return repository.findById(bookingId).orElseThrow(() -> new NotFoundException("Booking not create"));
+    }
+
+    private void checkUser(Long userId) {
+        userRepository.findById(userId).orElseThrow(()-> new NotFoundException("User not found"));
     }
 }

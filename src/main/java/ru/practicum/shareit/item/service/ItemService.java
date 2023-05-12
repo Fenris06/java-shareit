@@ -9,7 +9,7 @@ public interface ItemService {
 
     List<ItemDto> getUserItems(Long userId);
 
-    ItemDto getItem(Long id);
+    ItemDto getItem(Long userId, Long id);
 
     ItemDto createItem(Long userId, ItemDto itemDto);
 

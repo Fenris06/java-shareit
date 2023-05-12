@@ -3,7 +3,7 @@ package ru.practicum.shareit.user.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.DuplicateException;
+
 import ru.practicum.shareit.exception.NoArgumentException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDTO;
@@ -13,10 +13,9 @@ import ru.practicum.shareit.user.mapper.UserMapstructMapperImpl;
 import ru.practicum.shareit.user.storage.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+
 import java.util.stream.Collectors;
 
 @Service
@@ -52,15 +51,10 @@ public class UserService {
         repository.deleteById(id);
     }
 
-    public void checkUser(Long id) {
-        repository.findById(id).orElseThrow(() -> new NotFoundException("user not found"));
-    }
-
     private void checkUserEmail(String email) {
         if (email == null) {
             throw new NoArgumentException("Email not set");
         }
-
     }
 
     private void checkUserName(String name) {
@@ -83,10 +77,6 @@ public class UserService {
             updateUser.setName(user.getName());
         }
         return repository.save(updateUser);
-    }
-
-    public User getOwner(Long Id) {
-        return repository.findById(Id).orElseThrow(() -> new NotFoundException("user not found"));
     }
 }
 

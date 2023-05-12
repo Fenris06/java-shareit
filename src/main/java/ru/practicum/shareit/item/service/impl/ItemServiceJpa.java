@@ -13,7 +13,8 @@ import ru.practicum.shareit.item.mapper.ItemMapstructMapperImpl;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.storage.ItemRepository;
-import ru.practicum.shareit.user.service.UserService;
+
+import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,23 +27,24 @@ import java.util.stream.Collectors;
 public class ItemServiceJpa implements ItemService {
     private final ItemMapstructMapper mapper = new ItemMapstructMapperImpl();
     private final ItemRepository repository;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     @Override
     public List<ItemDto> getUserItems(Long userId) {
-        userService.checkUser(userId);
+        checkUser(userId);
         return repository.findByOwner(userId).stream().map(mapper::itemToDTO).collect(Collectors.toList());
     }
 
     @Override
-    public ItemDto getItem(Long id) {
+    public ItemDto getItem(Long userId, Long id) {
+        checkUser(userId);
         return mapper.itemToDTO(repository.findById(id).orElseThrow(()-> new NotFoundException("Item not found")));
     }
 
     @Override
     public ItemDto createItem(Long userId, ItemDto itemDto) {
         checkItemFields(itemDto);
-        userService.checkUser(userId);
+        checkUser(userId);
         Item item = mapper.itemFromDTO(itemDto);
         item.setOwner(userId);
         return mapper.itemToDTO(repository.save(item));
@@ -56,7 +58,7 @@ public class ItemServiceJpa implements ItemService {
 
     @Override
     public List<ItemDto> itemSearch(Long userId, String text) {
-        userService.checkUser(userId);
+        checkUser(userId);
         if (text.isEmpty()) {
             return new ArrayList<>();
         }
@@ -99,5 +101,9 @@ public class ItemServiceJpa implements ItemService {
         if (!Objects.equals(userId, item.getOwner())) {
             throw new NotFoundException("User can't update this item");
         }
+    }
+
+    private void checkUser(Long userId) {
+        userRepository.findById(userId).orElseThrow(()-> new NotFoundException("User not found"));
     }
 }
