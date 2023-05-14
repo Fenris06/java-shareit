@@ -49,4 +49,13 @@ public class BookingMapper {
         }
         return bookingForItemDTOS;
     }
+
+    public static BookingForItemDTO toBookingForItem(Booking booking) {
+        BookingForItemDTO itemBooking = new BookingForItemDTO();
+        itemBooking.setId(booking.getId());
+        itemBooking.setStart(booking.getStart());
+        itemBooking.setEnd(booking.getEnd());
+        itemBooking.setBookerId(booking.getBooker().getId());
+        return itemBooking;
+    }
 }

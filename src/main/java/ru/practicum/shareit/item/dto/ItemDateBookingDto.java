@@ -5,6 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import ru.practicum.shareit.booking.dto.BookingForItemDTO;
+import ru.practicum.shareit.comment.model.Comment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,4 +21,5 @@ public class ItemDateBookingDto {
     private Boolean available;
     private BookingForItemDTO lastBooking;
     private BookingForItemDTO nextBooking;
+    private final List<Comment> comments = new ArrayList<>();
 }

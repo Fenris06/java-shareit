@@ -14,4 +14,5 @@ public class BookingForItemDTO {
     private Long id;
     private LocalDateTime start;
     private LocalDateTime end;
+    private Long bookerId;
 }

@@ -84,9 +84,9 @@ public class BookingServiceImpl implements BookingService {
                         .map(BookingMapper::toDto)
                         .collect(Collectors.toList());
             case "CURRENT":
-                return repository.findByBooker_IdAndStartAfterAndEndBeforeOrderByStartDesc(userId,
-                                verification,
-                                verification)
+                return repository.findByBooker_IdAndStartBeforeAndEndAfterOrderByStartDesc(userId,
+                        verification,
+                        verification)
                         .stream()
                         .map(BookingMapper::toDto)
                         .collect(Collectors.toList());
@@ -123,7 +123,7 @@ public class BookingServiceImpl implements BookingService {
                 break;
             }
             case "CURRENT": {
-                ownerBooking = repository.findByItem_OwnerAndStartAfterAndEndBeforeOrderByStartDesc(userId,
+                ownerBooking = repository.findByItem_OwnerAndStartBeforeAndEndAfterOrderByStartDesc(userId,
                         verification,
                         verification);
                 break;
