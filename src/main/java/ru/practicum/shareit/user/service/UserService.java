@@ -8,8 +8,8 @@ import ru.practicum.shareit.exception.NoArgumentException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDTO;
 
-import ru.practicum.shareit.user.mapper.UserMapstructMapper;
-import ru.practicum.shareit.user.mapper.UserMapstructMapperImpl;
+import ru.practicum.shareit.user.mapper.UserMapper;
+
 import ru.practicum.shareit.user.storage.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
@@ -22,29 +22,28 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
-    private final UserMapstructMapper mapper = new UserMapstructMapperImpl();
     private final UserRepository repository;
 
     public List<UserDTO> getUsers() {
         log.debug("Users not covert to DTO");
-        return repository.findAll().stream().map(mapper::userToDTO).collect(Collectors.toList());
+        return repository.findAll().stream().map(UserMapper::userToDTO).collect(Collectors.toList());
     }
 
     public UserDTO getUser(Long id) {
         log.debug("User id {} not convert to DTO", id);
-        return mapper.userToDTO(repository.findById(id).orElseThrow(() -> new NotFoundException("user not found")));
+        return UserMapper.userToDTO(repository.findById(id).orElseThrow(() -> new NotFoundException("user not found")));
     }
 
     public UserDTO createUser(UserDTO userDTO) {
-        User user = mapper.userFromDTO(userDTO);
+        User user = UserMapper.userFromDTO(userDTO);
         checkUserName(user.getName());
         checkUserEmail(user.getEmail());
-        return mapper.userToDTO(repository.save(user));
+        return UserMapper.userToDTO(repository.save(user));
     }
 
     public UserDTO updateUser(UserDTO userDTO, Long id) {
-        User user = mapper.userFromDTO(userDTO);
-        return mapper.userToDTO(updateFields(user, id));
+        User user = UserMapper.userFromDTO(userDTO);
+        return UserMapper.userToDTO(updateFields(user, id));
     }
 
     public void deleteUser(Long id) {

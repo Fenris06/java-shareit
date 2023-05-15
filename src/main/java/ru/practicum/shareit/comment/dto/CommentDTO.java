@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode
 @ToString
 public class CommentDTO {
-    @NotNull
+    @NotNull(message = "Text can't be null")
     @NotEmpty(message = "Text can't be empty")
     String text;
 }

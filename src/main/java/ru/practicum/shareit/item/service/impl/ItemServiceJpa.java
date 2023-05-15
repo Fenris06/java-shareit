@@ -20,9 +20,8 @@ import ru.practicum.shareit.exception.NoArgumentException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDateBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.mapper.ItemDateMapper;
-import ru.practicum.shareit.item.mapper.ItemMapstructMapper;
-import ru.practicum.shareit.item.mapper.ItemMapstructMapperImpl;
+import ru.practicum.shareit.item.mapper.ItemMapper;
+
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.storage.ItemRepository;
@@ -38,7 +37,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Primary
 public class ItemServiceJpa implements ItemService {
-    private final ItemMapstructMapper mapper = new ItemMapstructMapperImpl();
     private final ItemRepository repository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
@@ -70,7 +68,7 @@ public class ItemServiceJpa implements ItemService {
             firstBooking = findFirstBooking(itemBookings, dateTime);
             lastBooking = findLastBooking(itemBookings, dateTime);
         }
-        ItemDateBookingDto itemDateBookingDto = ItemDateMapper.toItemWithDate(item, firstBooking, lastBooking);
+        ItemDateBookingDto itemDateBookingDto = ItemMapper.toItemWithDate(item, firstBooking, lastBooking);
         return findCommentForItem(itemDateBookingDto);
     }
 
@@ -78,15 +76,15 @@ public class ItemServiceJpa implements ItemService {
     public ItemDto createItem(Long userId, ItemDto itemDto) {
         checkItemFields(itemDto);
         checkUser(userId);
-        Item item = mapper.itemFromDTO(itemDto);
+        Item item = ItemMapper.itemFromDTO(itemDto);
         item.setOwner(userId);
-        return mapper.itemToDTO(repository.save(item));
+        return ItemMapper.itemToDTO(repository.save(item));
     }
 
     @Override
     public ItemDto updateItem(Long userId, ItemDto itemDto, Long itemId) {
-        Item item = mapper.itemFromDTO(itemDto);
-        return mapper.itemToDTO(updateItemFields(item, itemId, userId));
+        Item item = ItemMapper.itemFromDTO(itemDto);
+        return ItemMapper.itemToDTO(updateItemFields(item, itemId, userId));
     }
 
     @Override
@@ -95,7 +93,7 @@ public class ItemServiceJpa implements ItemService {
         if (text.isEmpty()) {
             return new ArrayList<>();
         }
-        return repository.itemSearch(text).stream().map(mapper::itemToDTO).collect(Collectors.toList());
+        return repository.itemSearch(text).stream().map(ItemMapper::itemToDTO).collect(Collectors.toList());
     }
 
     @Override
@@ -208,7 +206,7 @@ public class ItemServiceJpa implements ItemService {
         BookingForItemDTO firstBooking = null;
         BookingForItemDTO lastBooking = null;
         List<ItemDateBookingDto> itemDate = items.stream()
-                .map(item -> ItemDateMapper.toItemWithDate(item, firstBooking, lastBooking))
+                .map(item -> ItemMapper.toItemWithDate(item, firstBooking, lastBooking))
                 .collect(Collectors.toList());
         for (ItemDateBookingDto item : itemDate) {
             for (Booking booking : firstBookings) {

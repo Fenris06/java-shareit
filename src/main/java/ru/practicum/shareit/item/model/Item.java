@@ -4,10 +4,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import ru.practicum.shareit.booking.model.Booking;
+
 
 import javax.persistence.*;
-import java.util.List;
+
 
 /**
  * TODO Sprint add-controllers.
