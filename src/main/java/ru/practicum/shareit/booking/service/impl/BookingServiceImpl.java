@@ -59,8 +59,8 @@ public class BookingServiceImpl implements BookingService {
     public BookingAnswerDTO getBookingByUser(Long userId, Long bookingId) {
         checkUser(userId);
         Booking booking = getBooking(bookingId);
-        checkBookingUser(userId, booking);
-        return BookingMapper.toDto(booking);
+        Booking checkBooking = checkBookingUser(userId, booking);
+        return BookingMapper.toDto(checkBooking);
     }
 
     @Override
@@ -169,8 +169,9 @@ public class BookingServiceImpl implements BookingService {
         return booking;
     }
 
-    private void checkBookingUser(Long userId, Booking booking) {
+    private Booking checkBookingUser(Long userId, Booking booking) {
         if (Objects.equals(booking.getBooker().getId(), userId) || Objects.equals(booking.getItem().getOwner(), userId)) {
+            return booking;
         } else {
             throw new NotFoundException("This user can't see this booking");
         }
