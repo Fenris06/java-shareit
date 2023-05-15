@@ -177,11 +177,11 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    public Booking getBooking(Long bookingId) {
-        return repository.findById(bookingId).orElseThrow(() -> new NotFoundException("Booking not create"));
-    }
-
     private void checkUser(Long userId) {
         userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+    }
+
+    public Booking getBooking(Long bookingId) {
+        return repository.findById(bookingId).orElseThrow(() -> new NotFoundException("Booking not create"));
     }
 }
