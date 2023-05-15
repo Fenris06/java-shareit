@@ -38,18 +38,6 @@ public class BookingMapper {
         return answerDTO;
     }
 
-    public static List<BookingForItemDTO> toBookingForItemDTO(List<Booking> bookings) {
-        List<BookingForItemDTO> bookingForItemDTOS = new ArrayList<>();
-        for (Booking booking : bookings) {
-            BookingForItemDTO bookingForItemDTO = new BookingForItemDTO();
-            bookingForItemDTO.setId(booking.getId());
-            bookingForItemDTO.setStart(booking.getStart());
-            bookingForItemDTO.setEnd(booking.getEnd());
-            bookingForItemDTOS.add(bookingForItemDTO);
-        }
-        return bookingForItemDTOS;
-    }
-
     public static BookingForItemDTO toBookingForItem(Booking booking) {
         BookingForItemDTO itemBooking = new BookingForItemDTO();
         itemBooking.setId(booking.getId());
