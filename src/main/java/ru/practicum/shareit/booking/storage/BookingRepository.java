@@ -2,9 +2,9 @@ package ru.practicum.shareit.booking.storage;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import org.springframework.data.jpa.repository.Query;
+
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.model.BookingInfo;
+
 import ru.practicum.shareit.booking.model.BookingStatus;
 
 
@@ -41,6 +41,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
      List<Booking> findByItem_IdAndStatusOrderByStartAsc(Long id, BookingStatus status);
 
      List<Booking> findByItem_IdInAndStatusOrderByStartAsc(Collection<Long> ids, BookingStatus status);
+
+     List<Booking> findByBooker_IdAndItem_IdAndEndBefore(Long id, Long id1, LocalDateTime end);
+
+
 
 
 

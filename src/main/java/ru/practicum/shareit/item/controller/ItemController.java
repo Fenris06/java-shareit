@@ -3,11 +3,15 @@ package ru.practicum.shareit.item.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.comment.dto.AnswerCommentDTO;
+import ru.practicum.shareit.comment.dto.CommentDTO;
+import ru.practicum.shareit.comment.model.Comment;
 import ru.practicum.shareit.item.dto.ItemDateBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -50,5 +54,12 @@ public class ItemController {
     public List<ItemDto> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestParam String text) {
         log.debug("received GET /search with HEADER {} abd PARAM {}", userId, text);
         return itemService.itemSearch(userId, text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public AnswerCommentDTO createComment(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                          @PathVariable("itemId") Long itemId,
+                                          @RequestBody @Valid CommentDTO commentDTO) {
+        return itemService.createComment(userId, itemId, commentDTO);
     }
 }

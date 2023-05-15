@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.service.impl;
 
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,11 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 
 import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.comment.dto.AnswerCommentDTO;
+import ru.practicum.shareit.comment.dto.CommentDTO;
+import ru.practicum.shareit.comment.mapper.CommentMapper;
+import ru.practicum.shareit.comment.model.Comment;
+import ru.practicum.shareit.comment.storage.CommentRepository;
 import ru.practicum.shareit.exception.NoArgumentException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDateBookingDto;
@@ -21,6 +27,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.storage.ItemRepository;
 
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
@@ -35,6 +42,7 @@ public class ItemServiceJpa implements ItemService {
     private final ItemRepository repository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public List<ItemDateBookingDto> getUserItems(Long userId) {
@@ -45,9 +53,8 @@ public class ItemServiceJpa implements ItemService {
         List<Booking> itemsBooking = bookingRepository.findByItem_IdInAndStatusOrderByStartAsc(itemIds, BookingStatus.APPROVED);
         List<Booking> firstBookings = findFirstBookings(itemsBooking, dateTime);
         List<Booking> lastBookings = findLastBookings(itemsBooking, dateTime);
-
-        return setBookingDate(items, firstBookings, lastBookings);
-        // return repository.findByOwner(userId).stream().map(mapper::itemToDTO).collect(Collectors.toList());
+        List<ItemDateBookingDto> itemWithBooking = setBookingDate(items, firstBookings, lastBookings);
+        return findCommentsForBookerItems(itemWithBooking);
     }
 
     @Override
@@ -63,7 +70,8 @@ public class ItemServiceJpa implements ItemService {
             firstBooking = findFirstBooking(itemBookings, dateTime);
             lastBooking = findLastBooking(itemBookings, dateTime);
         }
-        return ItemDateMapper.toItemWithDate(item, firstBooking, lastBooking);
+        ItemDateBookingDto itemDateBookingDto = ItemDateMapper.toItemWithDate(item, firstBooking, lastBooking);
+        return findCommentForItem(itemDateBookingDto);
     }
 
     @Override
@@ -91,8 +99,14 @@ public class ItemServiceJpa implements ItemService {
     }
 
     @Override
-    public Item itemForBooking(Long id) {
-        return repository.findById(id).orElseThrow(() -> new NotFoundException("Item not found"));
+    public AnswerCommentDTO createComment(Long userId, Long itemId, CommentDTO commentDTO) {
+        checkUser(userId);
+        LocalDateTime dateTime = LocalDateTime.now();
+        Booking booking = findBookingForComment(userId, itemId, dateTime);
+        User user = booking.getBooker();
+        Item item = booking.getItem();
+        Comment comment = CommentMapper.fromDTO(commentDTO, item, user, dateTime);
+        return CommentMapper.toDTO(commentRepository.save(comment));
     }
 
     private void checkItemFields(ItemDto itemDto) {
@@ -211,5 +225,40 @@ public class ItemServiceJpa implements ItemService {
             }
         }
         return itemDate;
+    }
+
+    private Booking findBookingForComment(Long userId, Long itemId, LocalDateTime dateTime) {
+        List<Booking> bookings = bookingRepository.findByBooker_IdAndItem_IdAndEndBefore(userId, itemId, dateTime);
+        if (bookings.isEmpty()) {
+            throw new NoArgumentException("You can't write comment for this item");
+        }
+        return bookings.get(0);
+    }
+
+    private ItemDateBookingDto findCommentForItem(ItemDateBookingDto itemDateBookingDto) {
+        List<AnswerCommentDTO> itemComment = commentRepository.findByItem_Id(itemDateBookingDto.getId())
+                .stream()
+                .map(CommentMapper::toDTO)
+                .collect(Collectors.toList());
+        if (!itemComment.isEmpty()) {
+            itemDateBookingDto.getComments().addAll(itemComment);
+        }
+        return itemDateBookingDto;
+    }
+
+    private List<ItemDateBookingDto> findCommentsForBookerItems(List<ItemDateBookingDto> bookerItems) {
+        List<Long> itemIds = bookerItems.stream().map(ItemDateBookingDto::getId).collect(Collectors.toList());
+        List<Comment> itemComment = commentRepository.findByItem_IdIn(itemIds);
+        if (!itemComment.isEmpty()) {
+            for (ItemDateBookingDto item : bookerItems) {
+                for (Comment comment : itemComment) {
+                    if (Objects.equals(item.getId(), comment.getItem().getId())) {
+                        AnswerCommentDTO answerComment = CommentMapper.toDTO(comment);
+                        item.getComments().add(answerComment);
+                    }
+                }
+            }
+        }
+        return bookerItems;
     }
 }
