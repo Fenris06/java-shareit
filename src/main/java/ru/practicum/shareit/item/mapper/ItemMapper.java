@@ -9,21 +9,22 @@ import ru.practicum.shareit.item.model.Item;
 public class ItemMapper {
     public static Item itemFromDTO(ItemDto itemDto) {
         Item item = new Item();
-        item.setId( itemDto.getId() );
-        item.setName( itemDto.getName() );
-        item.setDescription( itemDto.getDescription() );
-        item.setAvailable( itemDto.getAvailable() );
+        item.setId(itemDto.getId());
+        item.setName(itemDto.getName());
+        item.setDescription(itemDto.getDescription());
+        item.setAvailable(itemDto.getAvailable());
         return item;
     }
 
     public static ItemDto itemToDTO(Item item) {
         ItemDto itemDto = new ItemDto();
-        itemDto.setId( item.getId() );
-        itemDto.setName( item.getName() );
-        itemDto.setDescription( item.getDescription() );
-        itemDto.setAvailable( item.getAvailable() );
+        itemDto.setId(item.getId());
+        itemDto.setName(item.getName());
+        itemDto.setDescription(item.getDescription());
+        itemDto.setAvailable(item.getAvailable());
         return itemDto;
     }
+
     public static ItemDateBookingDto toItemWithDate(Item item, BookingForItemDTO first, BookingForItemDTO last) {
         ItemDateBookingDto dateBookingDto = new ItemDateBookingDto();
         dateBookingDto.setId(item.getId());

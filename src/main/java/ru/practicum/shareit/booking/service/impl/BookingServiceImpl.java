@@ -36,8 +36,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingAnswerDTO createBooking(Long userId, BookingDto bookingDto) {
-        User user = userRepository.findById(userId).orElseThrow(()-> new NotFoundException("User not found"));
-        Item item = itemRepository.findById(bookingDto.getItemId()).orElseThrow(()-> new NotFoundException("Item not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+        Item item = itemRepository.findById(bookingDto.getItemId()).orElseThrow(() -> new NotFoundException("Item not found"));
         checkItemUser(item, user);
         checkItemStatus(item);
         Booking booking = BookingMapper.fromDto(bookingDto, item, user);
@@ -69,37 +69,17 @@ public class BookingServiceImpl implements BookingService {
         LocalDateTime verification = LocalDateTime.now();
         switch (state) {
             case "ALL":
-                return repository.findByBooker_IdOrderByStartDesc(userId)
-                        .stream()
-                        .map(BookingMapper::toDto)
-                        .collect(Collectors.toList());
+                return repository.findByBooker_IdOrderByStartDesc(userId).stream().map(BookingMapper::toDto).collect(Collectors.toList());
             case "FUTURE":
-                return repository.findByBooker_IdAndStartAfterOrderByStartDesc(userId, verification)
-                        .stream()
-                        .map(BookingMapper::toDto)
-                        .collect(Collectors.toList());
+                return repository.findByBooker_IdAndStartAfterOrderByStartDesc(userId, verification).stream().map(BookingMapper::toDto).collect(Collectors.toList());
             case "PAST":
-                return repository.findByBooker_IdAndEndBeforeOrderByStartDesc(userId, verification)
-                        .stream()
-                        .map(BookingMapper::toDto)
-                        .collect(Collectors.toList());
+                return repository.findByBooker_IdAndEndBeforeOrderByStartDesc(userId, verification).stream().map(BookingMapper::toDto).collect(Collectors.toList());
             case "CURRENT":
-                return repository.findByBooker_IdAndStartBeforeAndEndAfterOrderByStartDesc(userId,
-                        verification,
-                        verification)
-                        .stream()
-                        .map(BookingMapper::toDto)
-                        .collect(Collectors.toList());
+                return repository.findByBooker_IdAndStartBeforeAndEndAfterOrderByStartDesc(userId, verification, verification).stream().map(BookingMapper::toDto).collect(Collectors.toList());
             case "WAITING":
-                return repository.findByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING)
-                        .stream()
-                        .map(BookingMapper::toDto)
-                        .collect(Collectors.toList());
+                return repository.findByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING).stream().map(BookingMapper::toDto).collect(Collectors.toList());
             case "REJECTED":
-                return repository.findByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED)
-                        .stream().
-                        map(BookingMapper::toDto)
-                        .collect(Collectors.toList());
+                return repository.findByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED).stream().map(BookingMapper::toDto).collect(Collectors.toList());
             default:
                 throw new NoArgumentException("Unknown state: UNSUPPORTED_STATUS");
         }
@@ -123,9 +103,7 @@ public class BookingServiceImpl implements BookingService {
                 break;
             }
             case "CURRENT": {
-                ownerBooking = repository.findByItem_OwnerAndStartBeforeAndEndAfterOrderByStartDesc(userId,
-                        verification,
-                        verification);
+                ownerBooking = repository.findByItem_OwnerAndStartBeforeAndEndAfterOrderByStartDesc(userId, verification, verification);
                 break;
             }
             case "WAITING": {
@@ -133,7 +111,7 @@ public class BookingServiceImpl implements BookingService {
                 break;
             }
             case "REJECTED": {
-                ownerBooking =repository.findByItem_OwnerAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED);
+                ownerBooking = repository.findByItem_OwnerAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED);
                 break;
             }
             default:
@@ -192,8 +170,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private void checkBookingUser(Long userId, Booking booking) {
-        if(Objects.equals(booking.getBooker().getId(), userId)
-                || Objects.equals(booking.getItem().getOwner(), userId)) {
+        if (Objects.equals(booking.getBooker().getId(), userId) || Objects.equals(booking.getItem().getOwner(), userId)) {
         } else {
             throw new NotFoundException("This user can't see this booking");
         }
@@ -204,6 +181,6 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private void checkUser(Long userId) {
-        userRepository.findById(userId).orElseThrow(()-> new NotFoundException("User not found"));
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
     }
 }

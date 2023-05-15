@@ -9,8 +9,6 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dto.UserBookingDTO;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class BookingMapper {
     public static Booking fromDto(BookingDto bookingDto, Item item, User user) {
