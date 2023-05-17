@@ -37,9 +37,9 @@ public class UserController {
         return userService.createUser(userDTO);
     }
 
-    @PatchMapping("/{id}")
+   @PatchMapping("/{id}")
     public UserDTO update(@Valid @RequestBody UserDTO userDTO, @PathVariable("id") Long id) {
-        log.debug("received PATCH /users/{} and BODY {}", id, userDTO);
+       log.debug("received PATCH /users/{} and BODY {}", id, userDTO);
         return userService.updateUser(userDTO, id);
     }
 
