@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingAnswerDTO;
 import ru.practicum.shareit.booking.dto.BookingDto;
 
@@ -35,6 +36,7 @@ public class BookingServiceImpl implements BookingService {
     private final ItemRepository itemRepository;
 
     @Override
+    @Transactional
     public BookingAnswerDTO createBooking(Long userId, BookingDto bookingDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
         Item item = itemRepository.findById(bookingDto.getItemId()).orElseThrow(() -> new NotFoundException("Item not found"));
@@ -47,6 +49,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingAnswerDTO updateBookingStatus(Long userId, Long bookingId, Boolean approved) {
         checkUser(userId);
         Booking booking = getBooking(bookingId);
@@ -56,6 +59,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BookingAnswerDTO getBookingByUser(Long userId, Long bookingId) {
         checkUser(userId);
         Booking booking = getBooking(bookingId);
@@ -64,6 +68,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BookingAnswerDTO> getAllByUser(Long userId, String state) {
         checkUser(userId);
         LocalDateTime verification = LocalDateTime.now();
@@ -86,6 +91,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BookingAnswerDTO> getAllByOwner(Long userId, String state) {
         List<Booking> ownerBooking;
         LocalDateTime verification = LocalDateTime.now();

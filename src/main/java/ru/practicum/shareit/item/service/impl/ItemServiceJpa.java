@@ -4,6 +4,7 @@ package ru.practicum.shareit.item.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingForItemDTO;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
@@ -43,6 +44,7 @@ public class ItemServiceJpa implements ItemService {
     private final CommentRepository commentRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<ItemDateBookingDto> getUserItems(Long userId) {
         checkUser(userId);
         LocalDateTime dateTime = LocalDateTime.now();
@@ -56,6 +58,7 @@ public class ItemServiceJpa implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ItemDateBookingDto getItem(Long userId, Long id) {
         checkUser(userId);
         Item item = repository.findById(id).orElseThrow(() -> new NotFoundException("Item not found"));
@@ -73,6 +76,7 @@ public class ItemServiceJpa implements ItemService {
     }
 
     @Override
+    @Transactional
     public ItemDto createItem(Long userId, ItemDto itemDto) {
         checkItemFields(itemDto);
         checkUser(userId);
@@ -82,12 +86,14 @@ public class ItemServiceJpa implements ItemService {
     }
 
     @Override
+    @Transactional
     public ItemDto updateItem(Long userId, ItemDto itemDto, Long itemId) {
         Item item = ItemMapper.itemFromDTO(itemDto);
         return ItemMapper.itemToDTO(updateItemFields(item, itemId, userId));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ItemDto> itemSearch(Long userId, String text) {
         checkUser(userId);
         if (text.isEmpty()) {
@@ -97,6 +103,7 @@ public class ItemServiceJpa implements ItemService {
     }
 
     @Override
+    @Transactional
     public AnswerCommentDTO createComment(Long userId, Long itemId, CommentDTO commentDTO) {
         checkUser(userId);
         LocalDateTime dateTime = LocalDateTime.now();

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.NoArgumentException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDTO;
@@ -24,16 +25,19 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository repository;
 
+    @Transactional(readOnly = true)
     public List<UserDTO> getUsers() {
         log.debug("Users not covert to DTO");
         return repository.findAll().stream().map(UserMapper::userToDTO).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public UserDTO getUser(Long id) {
         log.debug("User id {} not convert to DTO", id);
         return UserMapper.userToDTO(repository.findById(id).orElseThrow(() -> new NotFoundException("user not found")));
     }
 
+    @Transactional
     public UserDTO createUser(UserDTO userDTO) {
         User user = UserMapper.userFromDTO(userDTO);
         checkUserName(user.getName());
@@ -41,11 +45,13 @@ public class UserService {
         return UserMapper.userToDTO(repository.save(user));
     }
 
+    @Transactional
     public UserDTO updateUser(UserDTO userDTO, Long id) {
         User user = UserMapper.userFromDTO(userDTO);
         return UserMapper.userToDTO(updateFields(user, id));
     }
 
+    @Transactional
     public void deleteUser(Long id) {
         repository.deleteById(id);
     }
