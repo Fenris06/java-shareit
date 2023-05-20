@@ -10,7 +10,6 @@ import javax.persistence.*;
  */
 @Getter
 @Setter
-@EqualsAndHashCode
 @ToString
 @Entity
 @Table(name = "users")

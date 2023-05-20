@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
  */
 @Setter
 @Getter
-@EqualsAndHashCode
 @ToString
 @Entity
 @Table(name = "requests")
