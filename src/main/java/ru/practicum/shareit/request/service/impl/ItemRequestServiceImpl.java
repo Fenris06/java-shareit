@@ -3,6 +3,7 @@ package ru.practicum.shareit.request.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
@@ -29,6 +30,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRepository itemRepository;
 
     @Override
+    @Transactional
     public ItemRequestAnswerDto createRequest(Long userId, ItemRequestDto requestDto) {
         checkUser(userId);
         LocalDateTime dateTime = LocalDateTime.now();
@@ -37,6 +39,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ItemRequestGetAnswerDTO> getOwnerRequest(Long userId) {
         checkUser(userId);
         List<ItemRequest> itemRequests = repository.findByRequestorIdOrderByCreatedDesc(userId);
@@ -46,6 +49,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ItemRequestGetAnswerDTO> getAllRequests(Long userId, Integer from, Integer size) {
         checkUser(userId);
         List<ItemRequest> itemAllRequests = getAllList(userId, from, size);
@@ -54,6 +58,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ItemRequestGetAnswerDTO getById(Long userId, Long requestId) {
         checkUser(userId);
         ItemRequest itemRequest = repository.findById(requestId)
