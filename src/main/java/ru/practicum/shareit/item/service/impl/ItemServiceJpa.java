@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingForItemDTO;
@@ -45,10 +46,10 @@ public class ItemServiceJpa implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ItemDateBookingDto> getUserItems(Long userId) {
+    public List<ItemDateBookingDto> getUserItems(Long userId, Integer from, Integer size) {
         checkUser(userId);
         LocalDateTime dateTime = LocalDateTime.now();
-        List<Item> items = repository.findByOwner(userId);
+        List<Item> items = repository.findByOwner(userId, PageRequest.of(from / size, size));
         List<Long> itemIds = items.stream().map(Item::getId).collect(Collectors.toList());
         List<Booking> itemsBooking = bookingRepository.findByItem_IdInAndStatusOrderByStartAsc(itemIds, BookingStatus.APPROVED);
         List<Booking> firstBookings = findFirstBookings(itemsBooking, dateTime);
@@ -94,12 +95,15 @@ public class ItemServiceJpa implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ItemDto> itemSearch(Long userId, String text) {
+    public List<ItemDto> itemSearch(Long userId, String text, Integer from, Integer size) {
         checkUser(userId);
         if (text.isEmpty()) {
             return new ArrayList<>();
         }
-        return repository.itemSearch(text).stream().map(ItemMapper::itemToDTO).collect(Collectors.toList());
+        return repository.itemSearch(text, PageRequest.of(from / size, size))
+                .stream()
+                .map(ItemMapper::itemToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

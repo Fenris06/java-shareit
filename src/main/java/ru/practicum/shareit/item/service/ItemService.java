@@ -10,7 +10,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import java.util.List;
 
 public interface ItemService {
-    List<ItemDateBookingDto> getUserItems(Long userId);
+    List<ItemDateBookingDto> getUserItems(Long userId, Integer from, Integer size);
 
     ItemDateBookingDto getItem(Long userId, Long id);
 
@@ -18,7 +18,7 @@ public interface ItemService {
 
     ItemDto updateItem(Long userId, ItemDto itemDto, Long itemId);
 
-    List<ItemDto> itemSearch(Long userId, String text);
+    List<ItemDto> itemSearch(Long userId, String text, Integer from, Integer size);
 
     AnswerCommentDTO createComment(Long userId, Long itemId, CommentDTO commentDTO);
 }
