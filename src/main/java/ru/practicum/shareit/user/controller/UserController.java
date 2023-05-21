@@ -22,7 +22,7 @@ public class UserController {
     @GetMapping
     public List<UserDTO> getUsers() {
         log.debug("received GET /users");
-       return userService.getUsers();
+        return userService.getUsers();
     }
 
     @GetMapping("/{id}")
@@ -32,14 +32,14 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDTO create(@Valid @RequestBody  UserDTO userDTO) {
+    public UserDTO create(@Valid @RequestBody UserDTO userDTO) {
         log.debug("received POST /users with body {}", userDTO);
         return userService.createUser(userDTO);
     }
 
-   @PatchMapping("/{id}")
+    @PatchMapping("/{id}")
     public UserDTO update(@Valid @RequestBody UserDTO userDTO, @PathVariable("id") Long id) {
-       log.debug("received PATCH /users/{} and BODY {}", id, userDTO);
+        log.debug("received PATCH /users/{} and BODY {}", id, userDTO);
         return userService.updateUser(userDTO, id);
     }
 

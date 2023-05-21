@@ -63,7 +63,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         checkUser(userId);
         ItemRequest itemRequest = repository.findById(requestId)
                 .orElseThrow(() -> new NotFoundException("itemRequest not found"));
-        List<ItemDto> itemDTOs = itemRepository.findByRequestIn(Collections.singletonList(requestId))
+        List<ItemDto> itemDTOs = itemRepository.findByRequestIn(List.of(requestId))
                 .stream().
                 map(ItemMapper::itemToDTO).
                 collect(Collectors.toList());
