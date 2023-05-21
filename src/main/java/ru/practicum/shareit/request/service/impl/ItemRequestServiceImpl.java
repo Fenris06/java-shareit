@@ -64,9 +64,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         ItemRequest itemRequest = repository.findById(requestId)
                 .orElseThrow(() -> new NotFoundException("itemRequest not found"));
         List<ItemDto> itemDTOs = itemRepository.findByRequestIn(List.of(requestId))
-                .stream().
-                map(ItemMapper::itemToDTO).
-                collect(Collectors.toList());
+                .stream()
+                .map(ItemMapper::itemToDTO)
+                .collect(Collectors.toList());
         ItemRequestGetAnswerDTO getAnswerDTO = ItemRequestMapper.toGetDto(itemRequest);
         getAnswerDTO.getItems().addAll(itemDTOs);
         return getAnswerDTO;
@@ -83,8 +83,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     private List<ItemRequestGetAnswerDTO> setItemsToRequests(List<ItemRequest> itemRequests, List<Item> items) {
         List<ItemRequestGetAnswerDTO> getAnswerDTO = itemRequests
-                .stream().
-                map(ItemRequestMapper::toGetDto)
+                .stream()
+                .map(ItemRequestMapper::toGetDto)
                 .collect(Collectors.toList());
         for (ItemRequestGetAnswerDTO request : getAnswerDTO) {
             for (Item item : items) {

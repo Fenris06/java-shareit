@@ -1,6 +1,6 @@
 package ru.practicum.shareit.booking.service;
 
-import org.springframework.transaction.annotation.Transactional;
+
 import ru.practicum.shareit.booking.dto.BookingAnswerDTO;
 import ru.practicum.shareit.booking.dto.BookingDto;
 
