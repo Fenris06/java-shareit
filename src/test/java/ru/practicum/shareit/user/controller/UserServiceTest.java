@@ -217,9 +217,9 @@ class UserServiceTest {
         userDTO.setName(null);
         userDTO.setEmail(null);
 
-       NoArgumentException e = assertThrows(NoArgumentException.class, ()-> userService.updateUser(userDTO, userId));
+        NoArgumentException e = assertThrows(NoArgumentException.class, () -> userService.updateUser(userDTO, userId));
 
-       assertEquals("All fields are empty", e.getMessage());
+        assertEquals("All fields are empty", e.getMessage());
     }
 
     @Test
