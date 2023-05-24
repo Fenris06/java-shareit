@@ -20,7 +20,7 @@ class ItemRepositoryTest {
     Item second;
     Item third;
     @Autowired
-    private ItemRepository itemRepository;
+    ItemRepository itemRepository;
 
     @BeforeEach
     public void beforeEach() {

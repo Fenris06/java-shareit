@@ -61,8 +61,8 @@ class ItemServiceJpaTest {
         Integer size = 2;
         LocalDateTime first = LocalDateTime.of(2023, 5, 22, 22, 0, 0);
         LocalDateTime second = LocalDateTime.of(2023, 5, 22, 22, 30, 0);
-        LocalDateTime third = LocalDateTime.of(2023, 5, 23, 22, 0, 0);
-        LocalDateTime fourth = LocalDateTime.of(2023, 5, 23, 22, 30, 0);
+        LocalDateTime third = LocalDateTime.of(2023, 6, 24, 22, 0, 0);
+        LocalDateTime fourth = LocalDateTime.of(2023, 6, 24, 22, 30, 0);
 
         Item item = new Item();
         item.setId(itemId);
@@ -125,8 +125,8 @@ class ItemServiceJpaTest {
 
         LocalDateTime first = LocalDateTime.of(2023, 5, 22, 22, 0, 0);
         LocalDateTime second = LocalDateTime.of(2023, 5, 22, 22, 30, 0);
-        LocalDateTime third = LocalDateTime.of(2023, 5, 23, 22, 0, 0);
-        LocalDateTime fourth = LocalDateTime.of(2023, 5, 23, 22, 30, 0);
+        LocalDateTime third = LocalDateTime.of(2023, 6, 23, 22, 0, 0);
+        LocalDateTime fourth = LocalDateTime.of(2023, 6, 23, 22, 30, 0);
 
         Item item = new Item();
         item.setId(itemId);
