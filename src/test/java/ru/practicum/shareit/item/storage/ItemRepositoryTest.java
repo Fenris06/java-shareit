@@ -19,6 +19,7 @@ class ItemRepositoryTest {
     Item first;
     Item second;
     Item third;
+
     @Autowired
     ItemRepository itemRepository;
 
