@@ -46,7 +46,6 @@ class UserServiceIntegrationTest {
         repository.deleteAll();
     }
 
-
     @Test
     void should_GetUsers_returnListUsers() {
         List<UserDTO> test = userService.getUsers();
