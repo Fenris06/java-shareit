@@ -23,7 +23,7 @@ class ItemRepositoryTest {
     private ItemRepository itemRepository;
 
     @BeforeEach
-    public void BeforeEach() {
+    public void beforeEach() {
         first = new Item();
         first.setName("drill");
         first.setDescription("Something for repair");
@@ -47,7 +47,7 @@ class ItemRepositoryTest {
     }
 
     @AfterEach
-    public void AfterEach() {
+    public void afterEach() {
         itemRepository.deleteAll();
     }
 
