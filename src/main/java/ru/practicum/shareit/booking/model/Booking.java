@@ -1,6 +1,6 @@
 package ru.practicum.shareit.booking.model;
 
-import lombok.EqualsAndHashCode;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
-@EqualsAndHashCode
 @ToString
 @Entity
 public class Booking {

@@ -1,6 +1,6 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.EqualsAndHashCode;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,7 +14,6 @@ import javax.persistence.*;
  */
 @Setter
 @Getter
-@EqualsAndHashCode
 @ToString
 @Entity
 @Table(name = "items")

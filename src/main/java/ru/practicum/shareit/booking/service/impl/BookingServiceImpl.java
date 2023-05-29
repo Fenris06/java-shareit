@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingAnswerDTO;
@@ -69,22 +70,23 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookingAnswerDTO> getAllByUser(Long userId, String state) {
+    public List<BookingAnswerDTO> getAllByUser(Long userId, String state, Integer from, Integer size) {
         checkUser(userId);
         LocalDateTime verification = LocalDateTime.now();
+        PageRequest page = PageRequest.of(from / size, size);
         switch (state) {
             case "ALL":
-                return repository.findByBooker_IdOrderByStartDesc(userId).stream().map(BookingMapper::toDto).collect(Collectors.toList());
+                return repository.findByBooker_IdOrderByStartDesc(userId, page).stream().map(BookingMapper::toDto).collect(Collectors.toList());
             case "FUTURE":
-                return repository.findByBooker_IdAndStartAfterOrderByStartDesc(userId, verification).stream().map(BookingMapper::toDto).collect(Collectors.toList());
+                return repository.findByBooker_IdAndStartAfterOrderByStartDesc(userId, verification, page).stream().map(BookingMapper::toDto).collect(Collectors.toList());
             case "PAST":
-                return repository.findByBooker_IdAndEndBeforeOrderByStartDesc(userId, verification).stream().map(BookingMapper::toDto).collect(Collectors.toList());
+                return repository.findByBooker_IdAndEndBeforeOrderByStartDesc(userId, verification, page).stream().map(BookingMapper::toDto).collect(Collectors.toList());
             case "CURRENT":
-                return repository.findByBooker_IdAndStartBeforeAndEndAfterOrderByStartDesc(userId, verification, verification).stream().map(BookingMapper::toDto).collect(Collectors.toList());
+                return repository.findByBooker_IdAndStartBeforeAndEndAfterOrderByStartDesc(userId, verification, verification, page).stream().map(BookingMapper::toDto).collect(Collectors.toList());
             case "WAITING":
-                return repository.findByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING).stream().map(BookingMapper::toDto).collect(Collectors.toList());
+                return repository.findByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING, page).stream().map(BookingMapper::toDto).collect(Collectors.toList());
             case "REJECTED":
-                return repository.findByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED).stream().map(BookingMapper::toDto).collect(Collectors.toList());
+                return repository.findByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED, page).stream().map(BookingMapper::toDto).collect(Collectors.toList());
             default:
                 throw new NoArgumentException("Unknown state: UNSUPPORTED_STATUS");
         }
@@ -92,32 +94,33 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookingAnswerDTO> getAllByOwner(Long userId, String state) {
+    public List<BookingAnswerDTO> getAllByOwner(Long userId, String state, Integer from, Integer size) {
         List<Booking> ownerBooking;
         LocalDateTime verification = LocalDateTime.now();
+        PageRequest page = PageRequest.of(from / size, size);
         switch (state) {
             case "ALL": {
-                ownerBooking = repository.findByItem_OwnerOrderByStartDesc(userId);
+                ownerBooking = repository.findByItem_OwnerOrderByStartDesc(userId, page);
                 break;
             }
             case "FUTURE": {
-                ownerBooking = repository.findByItem_OwnerAndStartAfterOrderByStartDesc(userId, verification);
+                ownerBooking = repository.findByItem_OwnerAndStartAfterOrderByStartDesc(userId, verification, page);
                 break;
             }
             case "PAST": {
-                ownerBooking = repository.findByItem_OwnerAndEndBeforeOrderByStartDesc(userId, verification);
+                ownerBooking = repository.findByItem_OwnerAndEndBeforeOrderByStartDesc(userId, verification, page);
                 break;
             }
             case "CURRENT": {
-                ownerBooking = repository.findByItem_OwnerAndStartBeforeAndEndAfterOrderByStartDesc(userId, verification, verification);
+                ownerBooking = repository.findByItem_OwnerAndStartBeforeAndEndAfterOrderByStartDesc(userId, verification, verification, page);
                 break;
             }
             case "WAITING": {
-                ownerBooking = repository.findByItem_OwnerAndStatusOrderByStartDesc(userId, BookingStatus.WAITING);
+                ownerBooking = repository.findByItem_OwnerAndStatusOrderByStartDesc(userId, BookingStatus.WAITING, page);
                 break;
             }
             case "REJECTED": {
-                ownerBooking = repository.findByItem_OwnerAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED);
+                ownerBooking = repository.findByItem_OwnerAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED, page);
                 break;
             }
             default:

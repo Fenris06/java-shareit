@@ -5,18 +5,15 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.Instant;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
-/**
- * TODO Sprint add-item-requests.
- */
 @Setter
 @Getter
 @EqualsAndHashCode
 @ToString
 public class ItemRequestDto {
-    private Long id;
+    @NotNull(message = "Description can't be null")
+    @NotEmpty(message = "Description can't be empty")
     private String description;
-    private Long requestorId;
-    private Instant created;
 }
