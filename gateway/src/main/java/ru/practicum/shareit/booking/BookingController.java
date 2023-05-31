@@ -4,17 +4,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
-@Controller
+
+@RestController
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
 @Slf4j
@@ -45,5 +48,22 @@ public class BookingController {
                                              @PathVariable Long bookingId) {
         log.info("Get booking {}, userId={}", bookingId, userId);
         return bookingClient.getBooking(userId, bookingId);
+    }
+
+    @PatchMapping("/{bookingId}")
+    public ResponseEntity<Object> updateBookingStatus(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                                @PathVariable("bookingId") Long bookingId,
+                                                @RequestParam("approved") Boolean approved) {
+        return bookingClient.updateBookingStatus(userId, bookingId, approved);
+    }
+
+    @GetMapping("/owner")
+    public ResponseEntity<Object> getAllByOwner(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                                @RequestParam(name = "state",
+                                                        defaultValue = "ALL",
+                                                        required = false) String state,
+                                                @RequestParam(name = "from", defaultValue = "0") @Min(0) Integer from,
+                                                @RequestParam(name = "size", defaultValue = "20") @Min(1) @Max(100) Integer size) {
+        return bookingClient.getAllByOwner(userId, state, from, size);
     }
 }
