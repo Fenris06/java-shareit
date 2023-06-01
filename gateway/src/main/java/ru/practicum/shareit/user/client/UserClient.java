@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
 import ru.practicum.shareit.user.dto.UserDTO;
+import ru.practicum.shareit.user.uservalidation.UserValidation;
+
 @Service
 public class UserClient extends BaseClient {
     private static final String API_PREFIX = "/users";
@@ -23,10 +25,12 @@ public class UserClient extends BaseClient {
     }
 
     public ResponseEntity<Object> createUser(UserDTO userDTO) {
+        UserValidation.checkUserFields(userDTO);
         return post("", userDTO);
     }
 
     public ResponseEntity<Object> updateUser(Long userId, UserDTO userDTO) {
+        UserValidation.checkUserUpdateFields(userDTO);
         return patch("/" + userId, userDTO);
     }
 

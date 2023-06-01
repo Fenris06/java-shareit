@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.exception.NoArgumentException;
+
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDTO;
 
@@ -40,8 +40,6 @@ public class UserService {
     @Transactional
     public UserDTO createUser(UserDTO userDTO) {
         User user = UserMapper.userFromDTO(userDTO);
-        checkUserName(user.getName());
-        checkUserEmail(user.getEmail());
         return UserMapper.userToDTO(repository.save(user));
     }
 
@@ -56,22 +54,7 @@ public class UserService {
         repository.deleteById(id);
     }
 
-    private void checkUserEmail(String email) {
-        if (email == null) {
-            throw new NoArgumentException("Email not set");
-        }
-    }
-
-    private void checkUserName(String name) {
-        if (name == null) {
-            throw new NoArgumentException("Name not set");
-        }
-    }
-
     private User updateFields(User user, Long userId) {
-        if (user.getName() == null && user.getEmail() == null) {
-            throw new NoArgumentException("All fields are empty");
-        }
         User updateUser = repository.findById(userId).orElseThrow(() -> new NotFoundException("user not found"));
         if (user.getEmail() != null && !user.getEmail().isEmpty()) {
             if (!updateUser.getEmail().equals(user.getEmail())) {
