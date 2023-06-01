@@ -2,7 +2,7 @@ package ru.practicum.shareit.user.dto;
 
 import lombok.*;
 
-import javax.validation.constraints.Email;
+
 
 
 
@@ -13,6 +13,5 @@ import javax.validation.constraints.Email;
 public class UserDTO {
     private Long id;
     private String name;
-    @Email(message = "Invalid email")
     private String email;
 }
