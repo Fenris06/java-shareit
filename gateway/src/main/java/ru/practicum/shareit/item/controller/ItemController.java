@@ -6,7 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.comment.dto.CommentDTO;
-import ru.practicum.shareit.item.controller.cient.ItemClient;
+import ru.practicum.shareit.item.client.ItemClient;
+
 import ru.practicum.shareit.item.dto.ItemDto;
 
 
@@ -38,7 +39,7 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createItem(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestBody ItemDto itemDto) {
+    public ResponseEntity<Object> createItem(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestBody @Valid ItemDto itemDto) {
         log.debug("received POST /items/ with HEADER {} and BODY {}", userId, itemDto);
         return client.createItem(userId, itemDto);
     }

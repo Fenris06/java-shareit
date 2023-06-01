@@ -44,7 +44,6 @@ public class BookingServiceImpl implements BookingService {
         checkItemUser(item, user);
         checkItemStatus(item);
         Booking booking = BookingMapper.fromDto(bookingDto, item, user);
-        checkBookingFields(booking);
         booking.setStatus(BookingStatus.WAITING);
         return BookingMapper.toDto(repository.save(booking));
     }
@@ -75,8 +74,6 @@ public class BookingServiceImpl implements BookingService {
         LocalDateTime verification = LocalDateTime.now();
         PageRequest page = PageRequest.of(from / size, size);
         switch (state) {
-            case "ALL":
-                return repository.findByBooker_IdOrderByStartDesc(userId, page).stream().map(BookingMapper::toDto).collect(Collectors.toList());
             case "FUTURE":
                 return repository.findByBooker_IdAndStartAfterOrderByStartDesc(userId, verification, page).stream().map(BookingMapper::toDto).collect(Collectors.toList());
             case "PAST":
@@ -88,7 +85,7 @@ public class BookingServiceImpl implements BookingService {
             case "REJECTED":
                 return repository.findByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED, page).stream().map(BookingMapper::toDto).collect(Collectors.toList());
             default:
-                throw new NoArgumentException("Unknown state: UNSUPPORTED_STATUS");
+                return repository.findByBooker_IdOrderByStartDesc(userId, page).stream().map(BookingMapper::toDto).collect(Collectors.toList());
         }
     }
 
@@ -99,10 +96,6 @@ public class BookingServiceImpl implements BookingService {
         LocalDateTime verification = LocalDateTime.now();
         PageRequest page = PageRequest.of(from / size, size);
         switch (state) {
-            case "ALL": {
-                ownerBooking = repository.findByItem_OwnerOrderByStartDesc(userId, page);
-                break;
-            }
             case "FUTURE": {
                 ownerBooking = repository.findByItem_OwnerAndStartAfterOrderByStartDesc(userId, verification, page);
                 break;
@@ -124,22 +117,11 @@ public class BookingServiceImpl implements BookingService {
                 break;
             }
             default:
-                throw new NoArgumentException("Unknown state: UNSUPPORTED_STATUS");
+                ownerBooking = repository.findByItem_OwnerOrderByStartDesc(userId, page);
+                break;
         }
         checkOwnerList(ownerBooking);
         return ownerBooking.stream().map(BookingMapper::toDto).collect(Collectors.toList());
-    }
-
-    private void checkBookingFields(Booking booking) {
-        if (booking.getStart() == null || booking.getStart().isBefore(LocalDateTime.now())) {
-            throw new NoArgumentException("Start time not add or start time is in the past");
-        }
-        if (booking.getEnd() == null || booking.getEnd().isBefore(booking.getStart())) {
-            throw new NoArgumentException("End time not add or end time is before start time");
-        }
-        if (booking.getStart().isEqual(booking.getEnd())) {
-            throw new NoArgumentException("Start time can't be equal end time");
-        }
     }
 
     private void checkItemStatus(Item item) {

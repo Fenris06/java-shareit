@@ -79,7 +79,6 @@ public class ItemServiceJpa implements ItemService {
     @Override
     @Transactional
     public ItemDto createItem(Long userId, ItemDto itemDto) {
-        checkItemFields(itemDto);
         checkUser(userId);
         Item item = ItemMapper.itemFromDTO(itemDto);
         item.setOwner(userId);
@@ -116,18 +115,6 @@ public class ItemServiceJpa implements ItemService {
         Item item = booking.getItem();
         Comment comment = CommentMapper.fromDTO(commentDTO, item, user, dateTime);
         return CommentMapper.toDTO(commentRepository.save(comment));
-    }
-
-    private void checkItemFields(ItemDto itemDto) {
-        if (itemDto.getName() == null || itemDto.getName().isEmpty()) {
-            throw new NoArgumentException("Item name not add");
-        }
-        if (itemDto.getDescription() == null || itemDto.getDescription().isEmpty()) {
-            throw new NoArgumentException("Item description not add");
-        }
-        if (itemDto.getAvailable() == null) {
-            throw new NoArgumentException("Item available not add");
-        }
     }
 
     private Item updateItemFields(Item item, Long itemId, Long userId) {
