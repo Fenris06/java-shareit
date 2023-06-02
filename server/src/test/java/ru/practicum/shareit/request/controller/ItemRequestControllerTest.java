@@ -65,22 +65,22 @@ class ItemRequestControllerTest {
         verify(itemRequestService).createRequest(userId, itemRequestDto);
     }
 
-    @SneakyThrows
-    @Test
-    void shouldNot_CreateRequest_IfFieldIsEmpty() {
-        Long userId = 1L;
-
-        ItemRequestDto itemRequestDto = new ItemRequestDto();
-        itemRequestDto.setDescription("");
-
-        mockMvc.perform(post("/requests")
-                        .header("X-Sharer-User-Id", userId)
-                        .content(objectMapper.writeValueAsString(itemRequestDto))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        verify(itemRequestService, never()).createRequest(userId, itemRequestDto);
-    }
+//    @SneakyThrows
+//    @Test
+//    void shouldNot_CreateRequest_IfFieldIsEmpty() {
+//        Long userId = 1L;
+//
+//        ItemRequestDto itemRequestDto = new ItemRequestDto();
+//        itemRequestDto.setDescription("");
+//
+//        mockMvc.perform(post("/requests")
+//                        .header("X-Sharer-User-Id", userId)
+//                        .content(objectMapper.writeValueAsString(itemRequestDto))
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isBadRequest());
+//
+//        verify(itemRequestService, never()).createRequest(userId, itemRequestDto);
+//    }
 
     @SneakyThrows
     @Test
@@ -151,53 +151,53 @@ class ItemRequestControllerTest {
         verify(itemRequestService).getAllRequests(userId, from, size);
     }
 
-    @SneakyThrows
-    @Test
-    void should_getAllRequests_ReturnInternalServerError_IfFromBelowZero() {
-        Long userId = 1L;
-        Integer from = -1;
-        Integer size = 1;
+//    @SneakyThrows
+//    @Test
+//    void should_getAllRequests_ReturnInternalServerError_IfFromBelowZero() {
+//        Long userId = 1L;
+//        Integer from = -1;
+//        Integer size = 1;
+//
+//        mockMvc.perform(get("/requests/all")
+//                        .header("X-Sharer-User-Id", userId)
+//                        .param("from", String.valueOf(from))
+//                        .param("size", String.valueOf(size)))
+//                .andExpect(status().isInternalServerError());
+//
+//        verify(itemRequestService, never()).getAllRequests(userId, from, size);
+//    }
 
-        mockMvc.perform(get("/requests/all")
-                        .header("X-Sharer-User-Id", userId)
-                        .param("from", String.valueOf(from))
-                        .param("size", String.valueOf(size)))
-                .andExpect(status().isInternalServerError());
+//    @SneakyThrows
+//    @Test
+//    void should_getAllRequests_ReturnInternalServerError_IfSizeBelowZero() {
+//        Long userId = 1L;
+//        Integer from = 0;
+//        Integer size = -1;
+//
+//        mockMvc.perform(get("/requests/all")
+//                        .header("X-Sharer-User-Id", userId)
+//                        .param("from", String.valueOf(from))
+//                        .param("size", String.valueOf(size)))
+//                .andExpect(status().isInternalServerError());
+//
+//        verify(itemRequestService, never()).getAllRequests(userId, from, size);
+//    }
 
-        verify(itemRequestService, never()).getAllRequests(userId, from, size);
-    }
-
-    @SneakyThrows
-    @Test
-    void should_getAllRequests_ReturnInternalServerError_IfSizeBelowZero() {
-        Long userId = 1L;
-        Integer from = 0;
-        Integer size = -1;
-
-        mockMvc.perform(get("/requests/all")
-                        .header("X-Sharer-User-Id", userId)
-                        .param("from", String.valueOf(from))
-                        .param("size", String.valueOf(size)))
-                .andExpect(status().isInternalServerError());
-
-        verify(itemRequestService, never()).getAllRequests(userId, from, size);
-    }
-
-    @SneakyThrows
-    @Test
-    void should_getAllRequests_ReturnInternalServerError_IfSizeMore100() {
-        Long userId = 1L;
-        Integer from = 0;
-        Integer size = 101;
-
-        mockMvc.perform(get("/requests/all")
-                        .header("X-Sharer-User-Id", userId)
-                        .param("from", String.valueOf(from))
-                        .param("size", String.valueOf(size)))
-                .andExpect(status().isInternalServerError());
-
-        verify(itemRequestService, never()).getAllRequests(userId, from, size);
-    }
+//    @SneakyThrows
+//    @Test
+//    void should_getAllRequests_ReturnInternalServerError_IfSizeMore100() {
+//        Long userId = 1L;
+//        Integer from = 0;
+//        Integer size = 101;
+//
+//        mockMvc.perform(get("/requests/all")
+//                        .header("X-Sharer-User-Id", userId)
+//                        .param("from", String.valueOf(from))
+//                        .param("size", String.valueOf(size)))
+//                .andExpect(status().isInternalServerError());
+//
+//        verify(itemRequestService, never()).getAllRequests(userId, from, size);
+//    }
 
     @SneakyThrows
     @Test

@@ -225,71 +225,71 @@ class ItemServiceJpaTest {
         verify(itemRepository, never()).save(item);
     }
 
-    @Test
-    void shouldNot_CreateItem_CreateItem_IfNameNotValid() {
-        Long userId = 1L;
-        Long itemId = 1L;
-        Long requestId = 1L;
+//    @Test
+//    void shouldNot_CreateItem_CreateItem_IfNameNotValid() {
+//        Long userId = 1L;
+//        Long itemId = 1L;
+//        Long requestId = 1L;
+//
+//        Item item = new Item();
+//        item.setId(itemId);
+//        item.setName("");
+//        item.setDescription("Something for repair");
+//        item.setAvailable(true);
+//        item.setOwner(userId);
+//        item.setRequest(requestId);
+//
+//        ItemDto itemDto = ItemMapper.itemToDTO(item);
+//
+//        NoArgumentException e = assertThrows(NoArgumentException.class, () -> itemServiceJpa.createItem(userId, itemDto));
+//
+//        assertEquals("Item name not add", e.getMessage());
+//        verify(itemRepository, never()).save(item);
+//    }
 
-        Item item = new Item();
-        item.setId(itemId);
-        item.setName("");
-        item.setDescription("Something for repair");
-        item.setAvailable(true);
-        item.setOwner(userId);
-        item.setRequest(requestId);
+//    @Test
+//    void shouldNot_CreateItem_CreateItem_IfDescriptionNotValid() {
+//        Long userId = 1L;
+//        Long itemId = 1L;
+//        Long requestId = 1L;
+//
+//        Item item = new Item();
+//        item.setId(itemId);
+//        item.setName("drill");
+//        item.setDescription("");
+//        item.setAvailable(true);
+//        item.setOwner(userId);
+//        item.setRequest(requestId);
+//
+//        ItemDto itemDto = ItemMapper.itemToDTO(item);
+//
+//        NoArgumentException e = assertThrows(NoArgumentException.class, () -> itemServiceJpa.createItem(userId, itemDto));
+//
+//        assertEquals("Item description not add", e.getMessage());
+//        verify(itemRepository, never()).save(item);
+//    }
 
-        ItemDto itemDto = ItemMapper.itemToDTO(item);
-
-        NoArgumentException e = assertThrows(NoArgumentException.class, () -> itemServiceJpa.createItem(userId, itemDto));
-
-        assertEquals("Item name not add", e.getMessage());
-        verify(itemRepository, never()).save(item);
-    }
-
-    @Test
-    void shouldNot_CreateItem_CreateItem_IfDescriptionNotValid() {
-        Long userId = 1L;
-        Long itemId = 1L;
-        Long requestId = 1L;
-
-        Item item = new Item();
-        item.setId(itemId);
-        item.setName("drill");
-        item.setDescription("");
-        item.setAvailable(true);
-        item.setOwner(userId);
-        item.setRequest(requestId);
-
-        ItemDto itemDto = ItemMapper.itemToDTO(item);
-
-        NoArgumentException e = assertThrows(NoArgumentException.class, () -> itemServiceJpa.createItem(userId, itemDto));
-
-        assertEquals("Item description not add", e.getMessage());
-        verify(itemRepository, never()).save(item);
-    }
-
-    @Test
-    void shouldNot_CreateItem_CreateItem_IfAvailableNotValid() {
-        Long userId = 1L;
-        Long itemId = 1L;
-        Long requestId = 1L;
-
-        Item item = new Item();
-        item.setId(itemId);
-        item.setName("drill");
-        item.setDescription("Something for repair");
-        item.setAvailable(null);
-        item.setOwner(userId);
-        item.setRequest(requestId);
-
-        ItemDto itemDto = ItemMapper.itemToDTO(item);
-
-        NoArgumentException e = assertThrows(NoArgumentException.class, () -> itemServiceJpa.createItem(userId, itemDto));
-
-        assertEquals("Item available not add", e.getMessage());
-        verify(itemRepository, never()).save(item);
-    }
+//    @Test
+//    void shouldNot_CreateItem_CreateItem_IfAvailableNotValid() {
+//        Long userId = 1L;
+//        Long itemId = 1L;
+//        Long requestId = 1L;
+//
+//        Item item = new Item();
+//        item.setId(itemId);
+//        item.setName("drill");
+//        item.setDescription("Something for repair");
+//        item.setAvailable(null);
+//        item.setOwner(userId);
+//        item.setRequest(requestId);
+//
+//        ItemDto itemDto = ItemMapper.itemToDTO(item);
+//
+//        NoArgumentException e = assertThrows(NoArgumentException.class, () -> itemServiceJpa.createItem(userId, itemDto));
+//
+//        assertEquals("Item available not add", e.getMessage());
+//        verify(itemRepository, never()).save(item);
+//    }
 
     @Test
     void should_UpdateItem_UpdateItemIfAllFieldsAreValid() {

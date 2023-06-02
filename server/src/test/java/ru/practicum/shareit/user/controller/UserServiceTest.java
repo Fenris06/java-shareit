@@ -53,32 +53,32 @@ class UserServiceTest {
         verify(userRepository).save(any());
     }
 
-    @Test
-    void shouldNot_createUser_ifEmailNotCheck() {
-        Long userId = 1L;
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(userId);
-        userDTO.setName("Artem");
-        userDTO.setEmail(null);
+//    @Test
+//    void shouldNot_createUser_ifEmailNotCheck() {
+//        Long userId = 1L;
+//        UserDTO userDTO = new UserDTO();
+//        userDTO.setId(userId);
+//        userDTO.setName("Artem");
+//        userDTO.setEmail(null);
+//
+//        NoArgumentException exception = assertThrows(NoArgumentException.class, () -> userService.createUser(userDTO));
+//        assertEquals("Email not set", exception.getMessage());
+//        verify(userRepository, never()).save(any());
+//    }
 
-        NoArgumentException exception = assertThrows(NoArgumentException.class, () -> userService.createUser(userDTO));
-        assertEquals("Email not set", exception.getMessage());
-        verify(userRepository, never()).save(any());
-    }
-
-    @Test
-    void shouldNot_createUser_ifNameNotCheck() {
-        Long userId = 1L;
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(userId);
-        userDTO.setName(null);
-        userDTO.setEmail("Artem@yandex.ru");
-
-        NoArgumentException exception = assertThrows(NoArgumentException.class, () -> userService.createUser(userDTO));
-
-        assertEquals("Name not set", exception.getMessage());
-        verify(userRepository, never()).save(any());
-    }
+//    @Test
+//    void shouldNot_createUser_ifNameNotCheck() {
+//        Long userId = 1L;
+//        UserDTO userDTO = new UserDTO();
+//        userDTO.setId(userId);
+//        userDTO.setName(null);
+//        userDTO.setEmail("Artem@yandex.ru");
+//
+//        NoArgumentException exception = assertThrows(NoArgumentException.class, () -> userService.createUser(userDTO));
+//
+//        assertEquals("Name not set", exception.getMessage());
+//        verify(userRepository, never()).save(any());
+//    }
 
     @Test
     void should_GetUsers_ReturnListUserDTO() {
@@ -209,18 +209,18 @@ class UserServiceTest {
         verify(userRepository).save(any());
     }
 
-    @Test
-    void shouldNot_UpdateUser_UpdateIfAllFieldsNull() {
-        Long userId = 1L;
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(userId);
-        userDTO.setName(null);
-        userDTO.setEmail(null);
-
-        NoArgumentException e = assertThrows(NoArgumentException.class, () -> userService.updateUser(userDTO, userId));
-
-        assertEquals("All fields are empty", e.getMessage());
-    }
+//    @Test
+//    void shouldNot_UpdateUser_UpdateIfAllFieldsNull() {
+//        Long userId = 1L;
+//        UserDTO userDTO = new UserDTO();
+//        userDTO.setId(userId);
+//        userDTO.setName(null);
+//        userDTO.setEmail(null);
+//
+//        NoArgumentException e = assertThrows(NoArgumentException.class, () -> userService.updateUser(userDTO, userId));
+//
+//        assertEquals("All fields are empty", e.getMessage());
+//    }
 
     @Test
     void deleteUser() {

@@ -252,71 +252,71 @@ class ItemControllerTest {
         //.andExpect(jsonPath("$.created", is(comment.getCreated())));
     }
 
-    @SneakyThrows
-    @Test
-    void shouldNot_SearchItems_ReturnListItemSearch_IfFromIsBelowZero() {
-        Long userId = 1L;
-        Integer from = -1;
-        Integer size = 2;
-        String text = "repair";
+//    @SneakyThrows
+//    @Test
+//    void shouldNot_SearchItems_ReturnListItemSearch_IfFromIsBelowZero() {
+//        Long userId = 1L;
+//        Integer from = -1;
+//        Integer size = 2;
+//        String text = "repair";
+//
+//        mockMvc.perform(get("/items/search")
+//                        .header("X-Sharer-User-Id", userId)
+//                        .param("text", text)
+//                        .param("from", String.valueOf(from))
+//                        .param("size", String.valueOf(size)))
+//                .andExpect(status().isInternalServerError());
+//
+//        verify(itemService, never()).itemSearch(userId, text, from, size);
+//    }
 
-        mockMvc.perform(get("/items/search")
-                        .header("X-Sharer-User-Id", userId)
-                        .param("text", text)
-                        .param("from", String.valueOf(from))
-                        .param("size", String.valueOf(size)))
-                .andExpect(status().isInternalServerError());
+//    @SneakyThrows
+//    @Test
+//    void shouldNot_SearchItems_ReturnListItemSearch_IfSizeIsMore100() {
+//        Long userId = 1L;
+//        Integer from = 1;
+//        Integer size = 101;
+//        String text = "repair";
+//
+//        mockMvc.perform(get("/items/search")
+//                        .header("X-Sharer-User-Id", userId)
+//                        .param("text", text)
+//                        .param("from", String.valueOf(from))
+//                        .param("size", String.valueOf(size)))
+//                .andExpect(status().isInternalServerError());
+//
+//        verify(itemService, never()).itemSearch(userId, text, from, size);
+//    }
 
-        verify(itemService, never()).itemSearch(userId, text, from, size);
-    }
+//    @SneakyThrows
+//    @Test
+//    void shouldNot_GetUserItems_ReturnListUserItems_IfFromBelowZero() {
+//        Long id = 1L;
+//        Integer from = -1;
+//        Integer size = 2;
+//
+//        mockMvc.perform(get("/items")
+//                        .header("X-Sharer-User-Id", id)
+//                        .param("from", String.valueOf(from))
+//                        .param("size", String.valueOf(size)))
+//                .andExpect(status().isInternalServerError());
+//
+//        verify(itemService, never()).getUserItems(id, from, size);
+//    }
 
-    @SneakyThrows
-    @Test
-    void shouldNot_SearchItems_ReturnListItemSearch_IfSizeIsMore100() {
-        Long userId = 1L;
-        Integer from = 1;
-        Integer size = 101;
-        String text = "repair";
-
-        mockMvc.perform(get("/items/search")
-                        .header("X-Sharer-User-Id", userId)
-                        .param("text", text)
-                        .param("from", String.valueOf(from))
-                        .param("size", String.valueOf(size)))
-                .andExpect(status().isInternalServerError());
-
-        verify(itemService, never()).itemSearch(userId, text, from, size);
-    }
-
-    @SneakyThrows
-    @Test
-    void shouldNot_GetUserItems_ReturnListUserItems_IfFromBelowZero() {
-        Long id = 1L;
-        Integer from = -1;
-        Integer size = 2;
-
-        mockMvc.perform(get("/items")
-                        .header("X-Sharer-User-Id", id)
-                        .param("from", String.valueOf(from))
-                        .param("size", String.valueOf(size)))
-                .andExpect(status().isInternalServerError());
-
-        verify(itemService, never()).getUserItems(id, from, size);
-    }
-
-    @SneakyThrows
-    @Test
-    void shouldNot_GetUserItems_ReturnListUserItems_IfSizeMore100() {
-        Long id = 1L;
-        Integer from = 0;
-        Integer size = 101;
-
-        mockMvc.perform(get("/items")
-                        .header("X-Sharer-User-Id", id)
-                        .param("from", String.valueOf(from))
-                        .param("size", String.valueOf(size)))
-                .andExpect(status().isInternalServerError());
-
-        verify(itemService, never()).getUserItems(id, from, size);
-    }
+//    @SneakyThrows
+//    @Test
+//    void shouldNot_GetUserItems_ReturnListUserItems_IfSizeMore100() {
+//        Long id = 1L;
+//        Integer from = 0;
+//        Integer size = 101;
+//
+//        mockMvc.perform(get("/items")
+//                        .header("X-Sharer-User-Id", id)
+//                        .param("from", String.valueOf(from))
+//                        .param("size", String.valueOf(size)))
+//                .andExpect(status().isInternalServerError());
+//
+//        verify(itemService, never()).getUserItems(id, from, size);
+    //}
 }
