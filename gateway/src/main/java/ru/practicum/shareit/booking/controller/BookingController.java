@@ -9,8 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.client.BookingClient;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
-import ru.practicum.shareit.booking.dto.BookingState;
-import ru.practicum.shareit.exception.NoArgumentException;
+
 
 import javax.validation.Valid;
 import javax.validation.constraints.Max;

@@ -6,15 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.client.UserClient;
 import ru.practicum.shareit.user.dto.UserDTO;
-import ru.practicum.shareit.user.uservalidation.UserValidation;
 
 
 import javax.validation.Valid;
 
 
-/**
- * TODO Sprint add-controllers.
- */
 @RestController
 @RequestMapping(path = "/users")
 @Slf4j
