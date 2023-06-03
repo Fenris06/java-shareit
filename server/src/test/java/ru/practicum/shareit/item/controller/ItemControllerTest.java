@@ -26,6 +26,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.practicum.shareit.header.ControllerHeader.X_SHARER_USER_ID;
 
 @WebMvcTest(value = ItemController.class)
 class ItemControllerTest {
@@ -53,7 +54,7 @@ class ItemControllerTest {
         when(itemService.getUserItems(id, from, size)).thenReturn(List.of(itemDateBookingDto));
 
         mockMvc.perform(get("/items")
-                        .header("X-Sharer-User-Id", id)
+                        .header(X_SHARER_USER_ID, id)
                         .param("from", String.valueOf(from))
                         .param("size", String.valueOf(size)))
                 .andExpect(status().isOk())
@@ -79,7 +80,7 @@ class ItemControllerTest {
         when(itemService.getUserItems(id, from, size)).thenReturn(List.of());
 
         mockMvc.perform(get("/items")
-                        .header("X-Sharer-User-Id", id)
+                        .header(X_SHARER_USER_ID, id)
                         .param("from", String.valueOf(from))
                         .param("size", String.valueOf(size)))
                 .andExpect(status().isOk())
@@ -104,7 +105,7 @@ class ItemControllerTest {
         when(itemService.getItem(userId, itemId)).thenReturn(itemDateBookingDto);
 
         mockMvc.perform(get("/items/{itemId}", itemId)
-                        .header("X-Sharer-User-Id", userId))
+                        .header(X_SHARER_USER_ID, userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(itemDateBookingDto.getId()), Long.class))
                 .andExpect(jsonPath("$.name", is(itemDateBookingDto.getName())))
@@ -126,7 +127,7 @@ class ItemControllerTest {
         when(itemService.getItem(userId, itemId)).thenThrow(NotFoundException.class);
 
         mockMvc.perform(get("/items/{itemId}", itemId)
-                        .header("X-Sharer-User-Id", userId))
+                        .header(X_SHARER_USER_ID, userId))
                 .andExpect(status().isNotFound());
 
         verify(itemService).getItem(userId, itemId);
@@ -150,7 +151,7 @@ class ItemControllerTest {
         when(itemService.createItem(userId, createItem)).thenReturn(returnItem);
 
         mockMvc.perform(post("/items")
-                        .header("X-Sharer-User-Id", userId)
+                        .header(X_SHARER_USER_ID, userId)
                         .content(objectMapper.writeValueAsString(createItem))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -180,7 +181,7 @@ class ItemControllerTest {
         when(itemService.updateItem(userId, updateField, itemId)).thenReturn(returnItem);
 
         mockMvc.perform(patch("/items/{itemId}", itemId)
-                        .header("X-Sharer-User-Id", userId)
+                        .header(X_SHARER_USER_ID, userId)
                         .content(objectMapper.writeValueAsString(updateField))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -210,7 +211,7 @@ class ItemControllerTest {
         when(itemService.itemSearch(userId, text, from, size)).thenReturn(List.of(createItem));
 
         mockMvc.perform(get("/items/search")
-                        .header("X-Sharer-User-Id", userId)
+                        .header(X_SHARER_USER_ID, userId)
                         .param("text", text)
                         .param("from", String.valueOf(from))
                         .param("size", String.valueOf(size)))
@@ -243,80 +244,11 @@ class ItemControllerTest {
         when(itemService.createComment(userId, itemId, commentDTO)).thenReturn(comment);
 
         mockMvc.perform(post("/items/{itemId}/comment", itemId)
-                        .header("X-Sharer-User-Id", userId)
+                        .header(X_SHARER_USER_ID, userId)
                         .content(objectMapper.writeValueAsString(commentDTO))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(comment.getId()), Long.class))
                 .andExpect(jsonPath("$.text", is(comment.getText())))
                 .andExpect(jsonPath("$.authorName", is(comment.getAuthorName())));
-        //.andExpect(jsonPath("$.created", is(comment.getCreated())));
     }
-
-//    @SneakyThrows
-//    @Test
-//    void shouldNot_SearchItems_ReturnListItemSearch_IfFromIsBelowZero() {
-//        Long userId = 1L;
-//        Integer from = -1;
-//        Integer size = 2;
-//        String text = "repair";
-//
-//        mockMvc.perform(get("/items/search")
-//                        .header("X-Sharer-User-Id", userId)
-//                        .param("text", text)
-//                        .param("from", String.valueOf(from))
-//                        .param("size", String.valueOf(size)))
-//                .andExpect(status().isInternalServerError());
-//
-//        verify(itemService, never()).itemSearch(userId, text, from, size);
-//    }
-
-//    @SneakyThrows
-//    @Test
-//    void shouldNot_SearchItems_ReturnListItemSearch_IfSizeIsMore100() {
-//        Long userId = 1L;
-//        Integer from = 1;
-//        Integer size = 101;
-//        String text = "repair";
-//
-//        mockMvc.perform(get("/items/search")
-//                        .header("X-Sharer-User-Id", userId)
-//                        .param("text", text)
-//                        .param("from", String.valueOf(from))
-//                        .param("size", String.valueOf(size)))
-//                .andExpect(status().isInternalServerError());
-//
-//        verify(itemService, never()).itemSearch(userId, text, from, size);
-//    }
-
-//    @SneakyThrows
-//    @Test
-//    void shouldNot_GetUserItems_ReturnListUserItems_IfFromBelowZero() {
-//        Long id = 1L;
-//        Integer from = -1;
-//        Integer size = 2;
-//
-//        mockMvc.perform(get("/items")
-//                        .header("X-Sharer-User-Id", id)
-//                        .param("from", String.valueOf(from))
-//                        .param("size", String.valueOf(size)))
-//                .andExpect(status().isInternalServerError());
-//
-//        verify(itemService, never()).getUserItems(id, from, size);
-//    }
-
-//    @SneakyThrows
-//    @Test
-//    void shouldNot_GetUserItems_ReturnListUserItems_IfSizeMore100() {
-//        Long id = 1L;
-//        Integer from = 0;
-//        Integer size = 101;
-//
-//        mockMvc.perform(get("/items")
-//                        .header("X-Sharer-User-Id", id)
-//                        .param("from", String.valueOf(from))
-//                        .param("size", String.valueOf(size)))
-//                .andExpect(status().isInternalServerError());
-//
-//        verify(itemService, never()).getUserItems(id, from, size);
-    //}
 }

@@ -15,6 +15,6 @@ import javax.validation.constraints.NotNull;
 public class CommentDTO {
     @NotNull(message = "Text can't be null")
     @NotEmpty(message = "Text can't be empty")
-    String text;
+    private String text;
 }
 

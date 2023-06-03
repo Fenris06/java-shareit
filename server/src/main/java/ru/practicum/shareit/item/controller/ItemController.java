@@ -14,6 +14,8 @@ import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
 
+import static ru.practicum.shareit.header.ControllerHeader.X_SHARER_USER_ID;
+
 
 @RestController
 @RequestMapping("/items")
@@ -23,7 +25,7 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping
-    public List<ItemDateBookingDto> getUserItems(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public List<ItemDateBookingDto> getUserItems(@RequestHeader(X_SHARER_USER_ID) Long userId,
                                                  @RequestParam(name = "from") Integer from,
                                                  @RequestParam(name = "size") Integer size) {
         log.debug("received GET /items with HEADER {}", userId);
@@ -31,19 +33,19 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDateBookingDto getItem(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable("itemId") Long id) {
+    public ItemDateBookingDto getItem(@RequestHeader(X_SHARER_USER_ID) Long userId, @PathVariable("itemId") Long id) {
         log.debug("received GET /items/{}", id);
         return itemService.getItem(userId, id);
     }
 
     @PostMapping
-    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestBody ItemDto itemDto) {
+    public ItemDto createItem(@RequestHeader(X_SHARER_USER_ID) Long userId, @RequestBody ItemDto itemDto) {
         log.debug("received POST /items/ with HEADER {} and BODY {}", userId, itemDto);
         return itemService.createItem(userId, itemDto);
     }
 
     @PatchMapping("/{id}")
-    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ItemDto updateItem(@RequestHeader(X_SHARER_USER_ID) Long userId,
                               @RequestBody ItemDto itemDto,
                               @PathVariable("id") Long id) {
         log.debug("received PATCH /items/{} with HEADER {} and BODY {}", id, userId, itemDto);
@@ -51,7 +53,7 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public List<ItemDto> searchItems(@RequestHeader(X_SHARER_USER_ID) Long userId,
                                      @RequestParam String text,
                                      @RequestParam(name = "from") Integer from,
                                      @RequestParam(name = "size") Integer size) {
@@ -60,7 +62,7 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    public AnswerCommentDTO createComment(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public AnswerCommentDTO createComment(@RequestHeader(X_SHARER_USER_ID) Long userId,
                                           @PathVariable("itemId") Long itemId,
                                           @RequestBody CommentDTO commentDTO) {
         return itemService.createComment(userId, itemId, commentDTO);

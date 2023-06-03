@@ -26,6 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.practicum.shareit.header.ControllerHeader.X_SHARER_USER_ID;
 
 @WebMvcTest(value = ItemRequestController.class)
 class ItemRequestControllerTest {
@@ -54,7 +55,7 @@ class ItemRequestControllerTest {
         when(itemRequestService.createRequest(userId, itemRequestDto)).thenReturn(answerDto);
 
         mockMvc.perform(post("/requests")
-                        .header("X-Sharer-User-Id", userId)
+                        .header(X_SHARER_USER_ID, userId)
                         .content(objectMapper.writeValueAsString(itemRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -64,23 +65,6 @@ class ItemRequestControllerTest {
 
         verify(itemRequestService).createRequest(userId, itemRequestDto);
     }
-
-//    @SneakyThrows
-//    @Test
-//    void shouldNot_CreateRequest_IfFieldIsEmpty() {
-//        Long userId = 1L;
-//
-//        ItemRequestDto itemRequestDto = new ItemRequestDto();
-//        itemRequestDto.setDescription("");
-//
-//        mockMvc.perform(post("/requests")
-//                        .header("X-Sharer-User-Id", userId)
-//                        .content(objectMapper.writeValueAsString(itemRequestDto))
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest());
-//
-//        verify(itemRequestService, never()).createRequest(userId, itemRequestDto);
-//    }
 
     @SneakyThrows
     @Test
@@ -97,7 +81,7 @@ class ItemRequestControllerTest {
         when(itemRequestService.getOwnerRequest(userId)).thenReturn(List.of(getAnswerDTO));
 
         mockMvc.perform(get("/requests")
-                        .header("X-Sharer-User-Id", userId))
+                        .header(X_SHARER_USER_ID, userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", is(getAnswerDTO.getId()), Long.class))
@@ -115,7 +99,7 @@ class ItemRequestControllerTest {
         when(itemRequestService.getOwnerRequest(userId)).thenReturn(List.of());
 
         mockMvc.perform(get("/requests")
-                        .header("X-Sharer-User-Id", userId))
+                        .header(X_SHARER_USER_ID, userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
 
@@ -139,7 +123,7 @@ class ItemRequestControllerTest {
         when(itemRequestService.getAllRequests(userId, from, size)).thenReturn(List.of(getAnswerDTO));
 
         mockMvc.perform(get("/requests/all")
-                        .header("X-Sharer-User-Id", userId)
+                        .header(X_SHARER_USER_ID, userId)
                         .param("from", String.valueOf(from))
                         .param("size", String.valueOf(size)))
                 .andExpect(status().isOk())
@@ -150,54 +134,6 @@ class ItemRequestControllerTest {
 
         verify(itemRequestService).getAllRequests(userId, from, size);
     }
-
-//    @SneakyThrows
-//    @Test
-//    void should_getAllRequests_ReturnInternalServerError_IfFromBelowZero() {
-//        Long userId = 1L;
-//        Integer from = -1;
-//        Integer size = 1;
-//
-//        mockMvc.perform(get("/requests/all")
-//                        .header("X-Sharer-User-Id", userId)
-//                        .param("from", String.valueOf(from))
-//                        .param("size", String.valueOf(size)))
-//                .andExpect(status().isInternalServerError());
-//
-//        verify(itemRequestService, never()).getAllRequests(userId, from, size);
-//    }
-
-//    @SneakyThrows
-//    @Test
-//    void should_getAllRequests_ReturnInternalServerError_IfSizeBelowZero() {
-//        Long userId = 1L;
-//        Integer from = 0;
-//        Integer size = -1;
-//
-//        mockMvc.perform(get("/requests/all")
-//                        .header("X-Sharer-User-Id", userId)
-//                        .param("from", String.valueOf(from))
-//                        .param("size", String.valueOf(size)))
-//                .andExpect(status().isInternalServerError());
-//
-//        verify(itemRequestService, never()).getAllRequests(userId, from, size);
-//    }
-
-//    @SneakyThrows
-//    @Test
-//    void should_getAllRequests_ReturnInternalServerError_IfSizeMore100() {
-//        Long userId = 1L;
-//        Integer from = 0;
-//        Integer size = 101;
-//
-//        mockMvc.perform(get("/requests/all")
-//                        .header("X-Sharer-User-Id", userId)
-//                        .param("from", String.valueOf(from))
-//                        .param("size", String.valueOf(size)))
-//                .andExpect(status().isInternalServerError());
-//
-//        verify(itemRequestService, never()).getAllRequests(userId, from, size);
-//    }
 
     @SneakyThrows
     @Test
@@ -215,7 +151,7 @@ class ItemRequestControllerTest {
         when(itemRequestService.getById(userId, requestId)).thenReturn(getAnswerDTO);
 
         mockMvc.perform(get("/requests/{requestId}", requestId)
-                        .header("X-Sharer-User-Id", userId))
+                        .header(X_SHARER_USER_ID, userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(getAnswerDTO.getId()), Long.class))
                 .andExpect(jsonPath("$.description", is(getAnswerDTO.getDescription())))
@@ -233,11 +169,9 @@ class ItemRequestControllerTest {
         when(itemRequestService.getById(userId, requestId)).thenThrow(NotFoundException.class);
 
         mockMvc.perform(get("/requests/{requestId}", requestId)
-                        .header("X-Sharer-User-Id", userId))
+                        .header(X_SHARER_USER_ID, userId))
                 .andExpect(status().isNotFound());
 
         verify(itemRequestService).getById(userId, requestId);
     }
-
-
 }

@@ -28,6 +28,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.practicum.shareit.header.ControllerHeader.X_SHARER_USER_ID;
 
 @WebMvcTest(value = BookingController.class)
 class BookingControllerTest {
@@ -70,7 +71,7 @@ class BookingControllerTest {
         when(bookingService.createBooking(userId, booking)).thenReturn(newBooking);
 
         mockMvc.perform(post("/bookings")
-                        .header("X-Sharer-User-Id", userId)
+                        .header(X_SHARER_USER_ID, userId)
                         .content(objectMapper.writeValueAsString(booking))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -94,7 +95,7 @@ class BookingControllerTest {
         when(bookingService.updateBookingStatus(userId, bookingId, status)).thenThrow(NotFoundException.class);
 
         mockMvc.perform(patch("/bookings/{bookingId}", bookingId)
-                        .header("X-Sharer-User-Id", userId)
+                        .header(X_SHARER_USER_ID, userId)
                         .param("approved", String.valueOf(status))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
@@ -131,7 +132,7 @@ class BookingControllerTest {
         when(bookingService.updateBookingStatus(userId, bookingId, status)).thenReturn(newBooking);
 
         mockMvc.perform(patch("/bookings/{bookingId}", bookingId)
-                        .header("X-Sharer-User-Id", userId)
+                        .header(X_SHARER_USER_ID, userId)
                         .param("approved", String.valueOf(status))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -172,7 +173,7 @@ class BookingControllerTest {
         when(bookingService.getBookingByUser(userId, bookingId)).thenReturn(newBooking);
 
         mockMvc.perform(get("/bookings/{bookingId}", bookingId)
-                        .header("X-Sharer-User-Id", userId))
+                        .header(X_SHARER_USER_ID, userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(newBooking.getId()), Long.class))
                 .andExpect(jsonPath("$.start", is(newBooking.getStart().toString())))
@@ -193,7 +194,7 @@ class BookingControllerTest {
         when(bookingService.getBookingByUser(userId, bookingId)).thenThrow(NotFoundException.class);
 
         mockMvc.perform(get("/bookings/{bookingId}", bookingId)
-                        .header("X-Sharer-User-Id", userId))
+                        .header(X_SHARER_USER_ID, userId))
                 .andExpect(status().isNotFound());
 
         verify(bookingService).getBookingByUser(userId, bookingId);
@@ -229,7 +230,7 @@ class BookingControllerTest {
         when(bookingService.getAllByUser(userId, state, from, size)).thenReturn(List.of(newBooking));
 
         mockMvc.perform(get("/bookings")
-                        .header("X-Sharer-User-Id", userId)
+                        .header(X_SHARER_USER_ID, userId)
                         .param("state", state)
                         .param("from", String.valueOf(from))
                         .param("size", String.valueOf(size)))
@@ -245,62 +246,6 @@ class BookingControllerTest {
         verify(bookingService).getAllByUser(userId, state, from, size);
     }
 
-//    @SneakyThrows
-//    @Test
-//    void should_GetAllByUser_ReturnInternalServerError_IfFromBelowZero() {
-//        Long userId = 1L;
-//        String state = "ALL";
-//        Integer from = -1;
-//        Integer size = 1;
-//
-//        mockMvc.perform(get("/bookings")
-//                        .header("X-Sharer-User-Id", userId)
-//                        .param("state", state)
-//                        .param("from", String.valueOf(from))
-//                        .param("size", String.valueOf(size)))
-//                .andExpect(status().isInternalServerError());
-//
-//
-//        verify(bookingService, never()).getAllByUser(userId, state, from, size);
-//    }
-
-//    @SneakyThrows
-//    @Test
-//    void should_GetAllByUser_ReturnInternalServerError_IfSizMore100() {
-//        Long userId = 1L;
-//        String state = "ALL";
-//        Integer from = 0;
-//        Integer size = 101;
-//
-//        mockMvc.perform(get("/bookings")
-//                        .header("X-Sharer-User-Id", userId)
-//                        .param("state", state)
-//                        .param("from", String.valueOf(from))
-//                        .param("size", String.valueOf(size)))
-//                .andExpect(status().isInternalServerError());
-//
-//
-//        verify(bookingService, never()).getAllByUser(userId, state, from, size);
-//    }
-
-//    @SneakyThrows
-//    @Test
-//    void should_GetAllByUser_ReturnInternalServerError_IfSizeBelowZero() {
-//        Long userId = 1L;
-//        String state = "ALL";
-//        Integer from = 0;
-//        Integer size = -1;
-//
-//        mockMvc.perform(get("/bookings")
-//                        .header("X-Sharer-User-Id", userId)
-//                        .param("state", state)
-//                        .param("from", String.valueOf(from))
-//                        .param("size", String.valueOf(size)))
-//                .andExpect(status().isInternalServerError());
-//
-//
-//        verify(bookingService, never()).getAllByUser(userId, state, from, size);
-//    }
 
     @SneakyThrows
     @Test
@@ -313,7 +258,7 @@ class BookingControllerTest {
         when(bookingService.getAllByUser(userId, state, from, size)).thenReturn(List.of());
 
         mockMvc.perform(get("/bookings")
-                        .header("X-Sharer-User-Id", userId)
+                        .header(X_SHARER_USER_ID, userId)
                         .param("state", state)
                         .param("from", String.valueOf(from))
                         .param("size", String.valueOf(size)))
@@ -353,7 +298,7 @@ class BookingControllerTest {
         when(bookingService.getAllByOwner(userId, state, from, size)).thenReturn(List.of(newBooking));
 
         mockMvc.perform(get("/bookings/owner")
-                        .header("X-Sharer-User-Id", userId)
+                        .header(X_SHARER_USER_ID, userId)
                         .param("state", state)
                         .param("from", String.valueOf(from))
                         .param("size", String.valueOf(size)))
@@ -380,7 +325,7 @@ class BookingControllerTest {
         when(bookingService.getAllByOwner(userId, state, from, size)).thenReturn(List.of());
 
         mockMvc.perform(get("/bookings/owner")
-                        .header("X-Sharer-User-Id", userId)
+                        .header(X_SHARER_USER_ID, userId)
                         .param("state", state)
                         .param("from", String.valueOf(from))
                         .param("size", String.valueOf(size)))
@@ -389,59 +334,4 @@ class BookingControllerTest {
 
         verify(bookingService).getAllByOwner(userId, state, from, size);
     }
-
-//    @SneakyThrows
-//    @Test
-//    void should_GetAllByOwner_ReturnInternalServerError_IfFromBelowZero() {
-//        Long userId = 1L;
-//        String state = "ALL";
-//        Integer from = -1;
-//        Integer size = 1;
-//
-//
-//        mockMvc.perform(get("/bookings/owner")
-//                        .header("X-Sharer-User-Id", userId)
-//                        .param("state", state)
-//                        .param("from", String.valueOf(from))
-//                        .param("size", String.valueOf(size)))
-//                .andExpect(status().isInternalServerError());
-//
-//        verify(bookingService, never()).getAllByOwner(userId, state, from, size);
-//    }
-
-//    @SneakyThrows
-//    @Test
-//    void should_GetAllByOwner_ReturnInternalServerError_IfSizeBelowZero() {
-//        Long userId = 1L;
-//        String state = "ALL";
-//        Integer from = 0;
-//        Integer size = -1;
-//
-//        mockMvc.perform(get("/bookings/owner")
-//                        .header("X-Sharer-User-Id", userId)
-//                        .param("state", state)
-//                        .param("from", String.valueOf(from))
-//                        .param("size", String.valueOf(size)))
-//                .andExpect(status().isInternalServerError());
-//
-//        verify(bookingService, never()).getAllByOwner(userId, state, from, size);
-//    }
-
-//    @SneakyThrows
-//    @Test
-//    void should_GetAllByOwner_ReturnInternalServerError_IfSizeMore100() {
-//        Long userId = 1L;
-//        String state = "ALL";
-//        Integer from = 0;
-//        Integer size = 101;
-//
-//        mockMvc.perform(get("/bookings/owner")
-//                        .header("X-Sharer-User-Id", userId)
-//                        .param("state", state)
-//                        .param("from", String.valueOf(from))
-//                        .param("size", String.valueOf(size)))
-//                .andExpect(status().isInternalServerError());
-//
-//        verify(bookingService, never()).getAllByOwner(userId, state, from, size);
-//    }
 }
