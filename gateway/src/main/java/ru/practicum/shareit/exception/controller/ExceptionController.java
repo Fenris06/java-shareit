@@ -1,6 +1,7 @@
 package ru.practicum.shareit.exception.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -9,6 +10,8 @@ import ru.practicum.shareit.exception.DuplicateException;
 import ru.practicum.shareit.exception.ErrorResponse;
 import ru.practicum.shareit.exception.NoArgumentException;
 import ru.practicum.shareit.exception.NotFoundException;
+
+import javax.validation.ConstraintViolationException;
 
 @RestControllerAdvice
 public class ExceptionController {
@@ -22,6 +25,18 @@ public class ExceptionController {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse emailValidException(final MethodArgumentNotValidException e) {
+        FieldError error = e.getFieldError();
+        if (error == null) {
+            return new ErrorResponse(e.getMessage());
+        } else {
+            return new  ErrorResponse(error.getDefaultMessage());
+        }
+
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleAll(ConstraintViolationException e) {
         return new ErrorResponse(e.getMessage());
     }
 

@@ -20,6 +20,7 @@ import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -82,19 +83,18 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     private List<ItemRequestGetAnswerDTO> setItemsToRequests(List<ItemRequest> itemRequests, List<Item> items) {
-        List<ItemRequestGetAnswerDTO> getAnswerDTO = itemRequests
-                .stream()
+        Map<Long, ItemDto> itemDtoMap = items.stream()
+                .map(ItemMapper::itemToDTO)
+                .collect(Collectors.toMap(ItemDto::getRequestId, Function.identity()));
+        return itemRequests.stream()
                 .map(ItemRequestMapper::toGetDto)
+                .map(r -> {
+                    if (itemDtoMap.containsKey(r.getId())) {
+                        r.getItems().add(itemDtoMap.get(r.getId()));
+                    }
+                    return r;
+                })
                 .collect(Collectors.toList());
-        for (ItemRequestGetAnswerDTO request : getAnswerDTO) {
-            for (Item item : items) {
-                if (Objects.equals(request.getId(), item.getRequest())) {
-                    ItemDto newItem = ItemMapper.itemToDTO(item);
-                    request.getItems().add(newItem);
-                }
-            }
-        }
-        return getAnswerDTO;
     }
 
     private List<ItemRequest> getAllList(Long userId, Integer from, Integer size) {
